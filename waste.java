@@ -7,7 +7,14 @@ import java.util.Date;
 
 import javax.swing.*;
 
+// import Pickup.java;
+
 //import swing1.s1.ListenForButton;
+
+/*
+aggregation query
+select waste_type.name as 'waste type', sum(weight) as sum, avg(weight) as average from pickup join waste_type on waste_type.id = pickup.waste_type_id group by waste_type.name;
+*/
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -31,6 +38,9 @@ public class waste extends JFrame{
     private JLabel displayLabel; 
     private JTextField tf1;
     private String date;
+
+    // private Pickup pickleRick = new Pickup(69, 4.20, "2018-09-23", "Carleson", "Glass", "ACE");
+    private Aggro ag = new Aggro("rec", 4.20, 6.9);
     
     //bellow is variables that store integer values derived from inputed data
     private String dayValue;
@@ -43,8 +53,15 @@ public class waste extends JFrame{
     
     private static final String DB_URL = "jdbc:sqlite:dataWaste.db";
 
-    public waste(){
+    private PickupTableModel tableModel = new PickupTableModel();
+    private JTable table = new JTable(tableModel);
 
+    private AggroTableModel aggroModel = new AggroTableModel();
+    private JTable aggroTable = new JTable(aggroModel);
+
+    public waste(){
+        // System.out.println(pickleRick);
+        System.out.println(ag);
     	// super("Waste Data Management");
         
         this.setSize(600, 600);
@@ -74,6 +91,8 @@ public class waste extends JFrame{
         String[] weight_types = {"lbs", "tons"};
         this.weightType = new JComboBox(weight_types);
         p.add(weightType);
+
+        
         
         
         // String[] waste_types = {"Recycling", "Trash", "Cardboard", "C&D", "Food", "E-waste", "Glass", "Green"};
@@ -200,12 +219,131 @@ public class waste extends JFrame{
         // setupLayout();
         // addListeners();
 
+        // p.add(new JScrollPane(table), BorderLayout.SOUTH);
+        p.add(new JScrollPane(aggroTable), BorderLayout.SOUTH);
+
+        
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.add(p);
+        // setupTable();
+        // displayPickups("2013-09-23","2018-12-31", "date", true);
+        displayAggro("2013-01-01","2018-12-31", "sum", false);
+        // displayPickups();
+        // displayAggro();
+        
         this.setVisible(true);
         submit.requestFocus();
+
+        
     }
     
+    private void setupPickups() {
+        // add(new JScrollPane(table), BorderLayout.SOUTH);
+        JPanel south = new JPanel();
+        south.setLayout(new BorderLayout());
+        south.add(new JScrollPane(table), BorderLayout.SOUTH);
+        this.add(south);
+        // south.setLayout(new );
+    }
+
+
+    /*
+    Void methods below for making tables pop up in the window
+    */
+
+
+    //all pickups
+    private void displayPickups() {
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            Statement s = conn.createStatement();
+            ResultSet pResults = s.executeQuery("select Pickup.id, Pickup.weight, Pickup.date, Site.name as sname, Waste_Type.name as wname, Company.name as cname from Pickup join Company on Company.id = Pickup.company_id join Waste_Type on Waste_Type.id = Pickup.waste_type_id join Site on Site.id = Pickup.site_id");
+            while (pResults.next()) {
+                int id = pResults.getInt(1);
+                double weight = pResults.getDouble(2);
+                String date = pResults.getString(3);
+                String site = pResults.getString(4);
+                String waste_type = pResults.getString(5);
+                String company = pResults.getString(6);
+
+                Pickup p = new Pickup(id, weight, date, site, waste_type, company);
+                tableModel.addInstance(p);
+            } 
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+    }
+
+    //pickups with start/end dates, ordered by either by date or by id, ascending or descending
+    private void displayPickups(String startDate, String endDate, String order, Boolean descending) {
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            Statement s = conn.createStatement();
+            String desc;
+            if(descending){desc = new String(" DESC");}
+            else {desc = new String(" ASC");}
+            ResultSet pResults = s.executeQuery("select Pickup.id, Pickup.weight, Pickup.date, Site.name as sname, Waste_Type.name as wname, Company.name as cname from Pickup join Company on Company.id = Pickup.company_id join Waste_Type on Waste_Type.id = Pickup.waste_type_id join Site on Site.id = Pickup.site_id where Pickup.date > '" + startDate + "' and Pickup.date < '" + endDate + "' order by " + order + desc);
+            while (pResults.next()) {
+                int id = pResults.getInt(1);
+                double weight = pResults.getDouble(2);
+                String date = pResults.getString(3);
+                String site = pResults.getString(4);
+                String waste_type = pResults.getString(5);
+                String company = pResults.getString(6);
+
+                Pickup p = new Pickup(id, weight, date, site, waste_type, company);
+                tableModel.addInstance(p);
+            } 
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+    }
+
+
+    private void displayAggro() {
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            Statement s = conn.createStatement();
+            ResultSet aResults = s.executeQuery("select waste_type.name as 'waste type', sum(weight) as sum, avg(weight) as average from pickup join waste_type on waste_type.id = pickup.waste_type_id group by waste_type.name");
+            while (aResults.next()) {
+                String waste_type = aResults.getString(1);
+                double sum = aResults.getDouble(2);
+                double average = aResults.getDouble(3);
+
+                Aggro a = new Aggro(waste_type, sum, average);
+                // System.out.println("A" + a);
+                aggroModel.addInstance(a);
+            } 
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+    }
+
+    private void displayAggro(String startDate, String endDate, String order, Boolean descending) {
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            Statement s = conn.createStatement();
+            String desc;
+            if(descending){desc = new String(" DESC");}
+            else {desc = new String(" ASC");}
+            ResultSet aResults = s.executeQuery("select waste_type.name as 'waste type', sum(weight) as sum, avg(weight) as average from pickup join waste_type on waste_type.id = pickup.waste_type_id where pickup.date > '" + startDate + "' and pickup.date < '" + endDate + "' group by waste_type.name order by " + order + desc);
+            while (aResults.next()) {
+                String waste_type = aResults.getString(1);
+                double sum = aResults.getDouble(2);
+                double average = aResults.getDouble(3);
+
+                Aggro a = new Aggro(waste_type, sum, average);
+                // System.out.println("A" + a);
+                aggroModel.addInstance(a);
+            } 
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+    }
+
+    
+
     private class ListenForButton implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == submit) {
