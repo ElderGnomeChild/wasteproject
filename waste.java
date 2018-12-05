@@ -26,15 +26,15 @@ public class waste extends JFrame{
 	public static void main(String[] aargs){
 		new waste();
 	}
-	private JLabel what;
+	
 	private JButton submit;
 	private JComboBox waste_type;     
     private JComboBox company;    
     private JComboBox site;
     private JComboBox weightType;
+    private JComboBox whichTable;
     private JSpinner day;
     private JSpinner year;
-    private JButton submitButton = new JButton("Submit Pickup");
     private JLabel displayLabel; 
     private JTextField tf1;
     private String date;
@@ -42,7 +42,7 @@ public class waste extends JFrame{
     // private Pickup pickleRick = new Pickup(69, 4.20, "2018-09-23", "Carleson", "Glass", "ACE");
     private Aggro ag = new Aggro("rec", 4.20, 6.9);
     
-    //bellow is variables that store integer values derived from inputed data
+    //bellow is variables that store values derived from inputed data
     private String dayValue;
     private String monthValue;
     private String yearValue;
@@ -64,18 +64,14 @@ public class waste extends JFrame{
         System.out.println(ag);
     	// super("Waste Data Management");
         
-        this.setSize(600, 600);
-//        Toolkit tk = Toolkit.getDefaultToolkit(); 
-//        Dimension dim = tk.getScreenSize(); 
-//        this.setSize(dim.width, dim.height);
+        //this.setSize(600, 600);
+        Toolkit tk = Toolkit.getDefaultToolkit(); 
+        Dimension dim = tk.getScreenSize(); 
+        this.setSize(dim.width, dim.height);
         this.setLocationRelativeTo(null);        
         this.setTitle("WasteManager");
         
         JPanel p = new JPanel();
-        what = new JLabel("");
-        what.setToolTipText("what?");
-		p.add(what);
-		
 		
         submit = new JButton("Insert Pickup");
         submit.setToolTipText("Adds a new row to the pickup table with parameters in text box and dropdown menus. Configure these correctly before clicking.");
@@ -91,14 +87,6 @@ public class waste extends JFrame{
         String[] weight_types = {"lbs", "tons"};
         this.weightType = new JComboBox(weight_types);
         p.add(weightType);
-
-        
-        
-        
-        // String[] waste_types = {"Recycling", "Trash", "Cardboard", "C&D", "Food", "E-waste", "Glass", "Green"};
-        // this.waste_type = new JComboBox(waste_types);
-        // p.add(this.waste_type);
-        
         
 
         try(Connection umbreon = DriverManager.getConnection(DB_URL)) { 
@@ -191,23 +179,6 @@ public class waste extends JFrame{
             JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
         }
-
-
-
-
-
-        // String[] companies = {"ACE", "METech", "METech Recycling"};
-        // this.company  = new JComboBox(companies);
-        // company.setSize(40, 40);
-        // p.add(this.company);
-        
-        
-        // String[] sites = {"Westminster//RYC-Recycling", "Westminster//East", "Westminster//West", "Westminster//Hogle", "Garfield Home"}; 
-        // this.site = new JComboBox(sites);
-        // p.add(this.site); 
-
-
-        
         
         Date todaysDate = new Date();
         year = new JSpinner(new SpinnerDateModel(todaysDate, null, null,Calendar.DAY_OF_MONTH));
@@ -219,11 +190,15 @@ public class waste extends JFrame{
         // setupLayout();
         // addListeners();
 
-        // p.add(new JScrollPane(table), BorderLayout.SOUTH);
-        p.add(new JScrollPane(aggroTable), BorderLayout.SOUTH);
-
+        String[] tables = {"Aggregations", "Pickups"};
+        this.whichTable = new JComboBox(tables);
+        p.add(whichTable);
         
-
+        
+        p.add(new JScrollPane(table), BorderLayout.SOUTH);
+        p.add(new JScrollPane(aggroTable), BorderLayout.SOUTH);
+    
+    
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.add(p);
         // setupTable();
@@ -248,10 +223,10 @@ public class waste extends JFrame{
     }
 
 
+
     /*
     Void methods below for making tables pop up in the window
     */
-
 
     //all pickups
     private void displayPickups() {
@@ -300,7 +275,6 @@ public class waste extends JFrame{
         }
     }
 
-
     private void displayAggro() {
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
             Statement s = conn.createStatement();
@@ -343,7 +317,7 @@ public class waste extends JFrame{
     }
 
     
-
+    //SEPARATE CLASS
     private class ListenForButton implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == submit) {
@@ -352,15 +326,14 @@ public class waste extends JFrame{
 				}
 				catch (NumberFormatException excep) {
 					JOptionPane.showMessageDialog(waste.this, "input weight as a number", "Invalid Weight", JOptionPane.ERROR_MESSAGE);
-//					System.exit(0);
+                //System.exit(0);
                 }
                 if (weightType.getSelectedItem().toString().equals("tons")){
                     weight *= 2000;
                 }
 
 				date = year.getValue().toString();
-//				what.setText(date);
-//				
+                //what.setText(date);		
 				//get date data as integers
 				String input, month, day, year, tempMonth; 
 				  input = date; 
@@ -387,8 +360,6 @@ public class waste extends JFrame{
                   yearValue = year;
                   
 
-                
-                
                 try(Connection conn = DriverManager.getConnection(DB_URL)) {
                     //company
                     String cname = company.getSelectedItem().toString();
@@ -440,17 +411,11 @@ public class waste extends JFrame{
                     statement.execute();
                     System.out.println("done");
                     
-
-
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
-                }
-
-				  
-				  
-			}
-		}
-
+                }	  
+            }
+        }
 	}
 }
