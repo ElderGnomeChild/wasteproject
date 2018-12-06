@@ -38,11 +38,8 @@ public class waste extends JFrame{
     private JLabel displayLabel; 
     private JTextField tf1;
     private String date;
-
-    // private Pickup pickleRick = new Pickup(69, 4.20, "2018-09-23", "Carleson", "Glass", "ACE");
-    private Aggro ag = new Aggro("rec", 4.20, 6.9);
     
-    //bellow is variables that store values derived from inputed data
+    //below is variables that store values derived from inputed data
     private String dayValue;
     private String monthValue;
     private String yearValue;
@@ -60,8 +57,6 @@ public class waste extends JFrame{
     private JTable aggroTable = new JTable(aggroModel);
 
     public waste(){
-        // System.out.println(pickleRick);
-        System.out.println(ag);
     	// super("Waste Data Management");
         
         //this.setSize(600, 600);
@@ -201,11 +196,11 @@ public class waste extends JFrame{
     
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.add(p);
-        // setupTable();
+        // setupPickups();
         // displayPickups("2013-09-23","2018-12-31", "date", true);
-        displayAggro("2013-01-01","2018-12-31", "sum", false);
-        // displayPickups();
-        // displayAggro();
+        // displayAggro("2013-01-01","2018-12-31", "sum", false);
+        displayPickups();
+        displayAggro();
         
         this.setVisible(true);
         submit.requestFocus();
