@@ -1,25 +1,14 @@
---SET SESSION sql_mode = 'STRICT_ALL_TABLES';
---DROP DATABASE IF EXISTS waste;
---CREATE DATABASE waste;
---USE waste;
-
---Create tables
--- CREATE TABLE WTEnum (type VARCHAR(32) PRIMARY KEY);
--- insert into WTEnum values("Recycling");
--- insert into WTEnum values("Trash");
-
-
-
-
+DROP TABLE If EXISTS Waste_Type;
+DROP TABLE If EXISTS Company;
+DROP TABLE If EXISTS Site;
+DROP TABLE If EXISTS Pickup;
 
 
 CREATE TABLE Waste_Type (
 	id INTEGER PRIMARY KEY AUTOINCREMENT, 
-	name VARCHAR(32) NOT NULL); 
-	-- service INTEGER NOT NULL);
-	-- service VARCHAR(32) NOT NULL, 
-	-- CONSTRAINT fk_column FOREIGN KEY (service) REFERENCES WTEnum (type)
--- );
+	name VARCHAR(32) NOT NULL
+); 
+
 
 CREATE TABLE Company (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -69,58 +58,10 @@ INSERT INTO Waste_Type (name) VALUES
 	("Food"),
 	("E-Waste");
 
-INSERT INTO Pickup (weight, date, site_Id, waste_type_Id, company_id) VALUES
-	(0.50, '07-01-2015', 1, 1, 1),
-	(0.23, '07-03-2015', 1, 1, 1),
-	(0.95, '04-01-2016', 3, 2, 1);
-
-
-
--- insert into Waste_Type values(1, "C&D", "Trash");
--- insert into Waste_Type values(2, "Cardboard", "Recycling");
--- CREATE TABLE Waste_Type (
--- 	id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
--- 	name VARCHAR(32) NOT NULL,
--- 	service VARCHAR(32)("Recycling", "Trash") NOT NULL
--- );
-
--- CREATE TABLE Company (
--- 	id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
--- 	name VARCHAR(32) NOT NULL,
--- 	address VARCHAR(128) NOT NULL,
--- 	description TEXT
--- );
-
-
--- insert into Company values(
--- 	1, "McDonalds", "69 S 420 E Salt Lake City, UT", "Danky McSpanky delicious patties direct to you. Also waste collection."
--- 	);
-
--- CREATE TABLE Site (
--- 	id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
--- 	name VARCHAR(32) NOT NULL,
--- 	address VARCHAR(128) NOT NULL,
-
--- );
-
--- CREATE TABLE Destination (
--- 	id INTEGER PRIMARY KEY AUTOINCREMENT,
--- 	name VARCHAR(32) NOT NULL,
--- );
-
--- CREATE TABLE Pickup (
--- 	id INTEGER PRIMARY KEY AUTOINCREMENT,
--- 	weight DECIMAL(8,3),
--- 	date DATE,
--- 	site_Id  INTEGER,
--- 	destination_Id INTEGER,
--- 	waste_type_Id INTEGER,
--- 	company_id INTEGER.,
-
--- 	FOREIGN KEY (site_Id) REFERENCES Site (id),
--- 	FOREIGN KEY (destination_Id) REFERENCES Destination (id),
--- 	FOREIGN KEY (company_id) REFERENCES Company (id),
--- 	FOREIGN KEY (waste_type_Id) REFERENCES Waste_Type (id),
--- );
-
--- select name, service from Waste_Type where id == 1;
+INSERT INTO Pickup (weight, date, site_Id, waste_type_Id, company_id, smalldate) VALUES
+	(300, '2015-09-15', 1, 1, 1, 201509),
+	(2005, '2018-12-31', 1, 1, 1, 201812),
+	(6900, '1996-08-11', 3, 2, 1, 199608),
+	(1200, '2015-09-23', 1, 1, 1, 201509),
+	(640, '2018-12-04', 1, 1, 1, 201812),
+	(3500, '1996-08-09', 3, 2, 1, 199608);
