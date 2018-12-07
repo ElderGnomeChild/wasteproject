@@ -70,43 +70,40 @@ public class waste extends JFrame{
   
   
   private static final String DB_URL = "jdbc:sqlite:dataWaste.db";
-  
-//   private PickupTableModel tableModel = new PickupTableModel();
-//   private JTable table = new JTable(tableModel);
-  
-//   private AggroTableModel aggroModel = new AggroTableModel();
-//   private JTable aggroTable = new JTable(aggroModel);
+ 
   
 //CONSTRUCTOR:
   public waste(){
 // setting window parameters 
     Toolkit tk = Toolkit.getDefaultToolkit();      
     Dimension dim = tk.getScreenSize(); 
-    this.setSize(dim.width, dim.height);
+    this.setSize(1200, 800);
     this.setLocationRelativeTo(null);        
     this.setTitle("WasteManager");
+    Font font = new Font("Times New Roman", Font.PLAIN, 20);
     
-    // ********************************************** NORTH PANEL ************************************************
-    JPanel p = new JPanel(); //p is the north panel
+    // ********************************************** INSERT PORTION ************************************************
+    JPanel p = new JPanel(new GridLayout(0,2)); //p is the north panel
     
-    //submit button
-    submit = new JButton("Insert Pickup");
-    submit.setToolTipText("Adds a new row to the pickup table with parameters in text box and dropdown menus. Configure these correctly before clicking.");
-    ListenForButton lfb = new ListenForButton();
-    submit.addActionListener(lfb);
-    p.add(submit);
-    
+    //weight input label
+    JLabel weight_label = new JLabel("Enter the pickup weight in this text box");
+    weight_label.setFont(font); 
+    p.add(weight_label);
     //weight input textbox
     tf1 = new JTextField("",20);
     tf1.setToolTipText("put in the weight");
+    tf1.setFont(font); 
     p.add(tf1);
     
+    //weight_types label
+    JLabel weight_types_label = new JLabel("Specify the weight in pounds or tons");
+    weight_types_label.setFont(font); 
+    p.add(weight_types_label);
     //weight tpyes combo box
     String[] weight_types = {"lbs", "tons"};
     this.weightType = new JComboBox(weight_types);
+    weightType.setFont(font); 
     p.add(weightType);
-    
-    
     
     try(Connection umbreon = DriverManager.getConnection(DB_URL)) { 
       
@@ -133,9 +130,14 @@ public class waste extends JFrame{
         companies[count] = currentName;
         count++;
       }
+      //label for company combo box
+      JLabel company_label = new JLabel("Select the company responsible for this pickup");
+      company_label.setFont(font); 
+      p.add(company_label);
 //initialize company combobox
       this.company  = new JComboBox(companies);           
       company.setSize(40, 40);
+      company.setFont(font); 
       p.add(this.company);
       
 //generate new sites
@@ -159,10 +161,17 @@ public class waste extends JFrame{
         sites[count] = currentName;
         count++;
       }
+      
+//label for sites combobox
+      JLabel site_label = new JLabel("Select the site where this pickup occured");
+      site_label.setFont(font); 
+      p.add(site_label);
 //initialize sites combobox
       this.site  = new JComboBox(sites);
       site.setSize(40, 40);
+      site.setFont(font); 
       p.add(this.site);
+      
       
 //generate new waste types
       num = umbreon.prepareStatement(
@@ -184,8 +193,13 @@ public class waste extends JFrame{
         waste_types[count] = currentName;
         count++;
       }
+//waste_types_label
+      JLabel wt_label = new JLabel("Select the type of waste that was picked up");
+      wt_label.setFont(font); 
+      p.add(wt_label);
 //initialize waste_types combo box
       this.waste_type = new JComboBox(waste_types);
+      waste_type.setFont(font); 
       p.add(this.waste_type);
       
     } catch (SQLException ex) {
@@ -193,76 +207,130 @@ public class waste extends JFrame{
       ex.printStackTrace();
     }
     
+//date picker label
+    JLabel date1_label = new JLabel("Input the date of this pickup");
+    date1_label.setFont(font); 
+    p.add(date1_label);
 //date picker for data insertion
     Date todaysDate = new Date();
     year = new JSpinner(new SpinnerDateModel(todaysDate, null, null,Calendar.DAY_OF_MONTH));
     JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(year, "MM/dd/yy");
     year.setEditor(dateEditor);
     date = year.getValue().toString();
+    year.setFont(font); 
     p.add(year);
     
-//*********************************** SOUTH PANEL ******************************************
-
-// create ne panel (to add to the south of the north panel)
-    JPanel s = new JPanel(); 
+    //submit button label
+    JLabel submit_label = new JLabel("Click this button to submit a single pickup entry");
+    submit_label.setFont(font); 
+    p.add(submit_label);
     
-//pickup table button
-    this.generate_pickup_table = new JButton("Generate Pickup Table");
-    this.generate_pickup_table.setToolTipText("Generates a table displaying all pickups in the database between given dates and ordered by a specified parameter"); 
-    ListenForButton lfpick = new ListenForButton();
-    this.generate_pickup_table.addActionListener(lfpick); 
-    s.add(generate_pickup_table);
+    //submit button
+    submit = new JButton("Insert Pickup");
+    submit.setToolTipText("Adds a new row to the pickup table with parameters in text box and dropdown menus. Configure these correctly before clicking.");
+    ListenForButton lfb = new ListenForButton();
+    submit.addActionListener(lfb);
+    submit.setFont(font); 
+    p.add(submit);
     
-// aggregation table button
-    this.generate_aggregation_table = new JButton("Generate Aggregation Table");
-    this.generate_aggregation_table.setToolTipText("Generates a table displaying aggregated data between given dates and ordered by a specified parameter"); 
-    ListenForButton lfaggro = new ListenForButton();
-    this.generate_aggregation_table.addActionListener(lfaggro); 
-    s.add(generate_aggregation_table);
+//*********************************** QUERY PORTION ******************************************
+ 
+    JLabel above = new JLabel("The  above boxes are for inserting data");
+    above.setFont(font);
+    JLabel below = new JLabel("The below boxes are for retrieving data");
+    below.setFont(font);
+    p.add(above);
+    p.add(new JLabel());
+    p.add(below);
+    p.add(new JLabel());
     
+    
+//pickup sort label
+    JLabel pickup_sort_label = new JLabel("How do you want the pickups sorted?");
+    pickup_sort_label.setFont(font); 
+    p.add(pickup_sort_label);
 //sort by comboBox for pickup table
     String[] pickupSort = {"id","date"}; 
     this.sortBy_pickup = new JComboBox(pickupSort); 
-    s.add(sortBy_pickup); 
+    sortBy_pickup.setFont(font); 
+    p.add(sortBy_pickup); 
     
+//aggro sort label
+    JLabel ag_sort_label = new JLabel("How should the aggregated data be sorted?");
+    ag_sort_label.setFont(font); 
+    p.add(ag_sort_label);
 //sort by comboBox for aggregation table
     String[] aggroSort = {"sum", "average"}; 
     this.sortBy_aggro = new JComboBox(aggroSort); 
-    s.add(sortBy_aggro);
+    sortBy_aggro.setFont(font); 
+    p.add(sortBy_aggro);
     
+    //ascdesc label
+    JLabel ascdesc_label = new JLabel("Ascending or Descending order?");
+    ascdesc_label.setFont(font); 
+    p.add(ascdesc_label);
 // combo box to descide ascending or descending order 
     String[] asc_desc = {"Ascending Order", "Descending Order"}; 
     this.upOrDown = new JComboBox(asc_desc); 
-    s.add(upOrDown); 
+    upOrDown.setFont(font); 
+    p.add(upOrDown); 
     
+    
+//day2 label
+    JLabel day2_label = new JLabel("Select the start date to sort by");
+    day2_label.setFont(font); 
+    p.add(day2_label);
 //spinner for picking start day for query 
     start_day = new JSpinner(new SpinnerDateModel(todaysDate, null, null,Calendar.DAY_OF_MONTH));
     start_day.setToolTipText("THIS ONE IS THE START"); 
     JSpinner.DateEditor dateEditor1 = new JSpinner.DateEditor(start_day, "MM/dd/yy");
     start_day.setEditor(dateEditor1);
     date = year.getValue().toString();
-    s.add(start_day);
-    
+    start_day.setFont(font); 
+    p.add(start_day);
+  
+//day3 label
+    JLabel day3_label = new JLabel("Select the start date to sort by");
+    day3_label.setFont(font); 
+    p.add(day3_label);
 //spinner for picking end day for query
     end_day = new JSpinner(new SpinnerDateModel(todaysDate, null, null,Calendar.DAY_OF_MONTH));
     end_day.setToolTipText("This one is the end"); 
     JSpinner.DateEditor dateEditor2 = new JSpinner.DateEditor(end_day, "MM/dd/yy");
     end_day.setEditor(dateEditor2);
     date = year.getValue().toString();
-    s.add(end_day);
+    end_day.setFont(font); 
+    p.add(end_day);
 
     
-    //p.add(new JScrollPane(table), BorderLayout.SOUTH);
-    //p.add(new JScrollPane(aggroTable), BorderLayout.SOUTH);
+//pickup label
+    JLabel pickup_label = new JLabel("Click to generate a table of pickups from start date to end date");
+    pickup_label.setFont(font); 
+    p.add(pickup_label);
+//pickup table button
+    this.generate_pickup_table = new JButton("Generate Pickup Table");
+    this.generate_pickup_table.setToolTipText("Generates a table displaying all pickups between requested dates"); 
+    ListenForButton lfpick = new ListenForButton();
+    this.generate_pickup_table.addActionListener(lfpick); 
+    generate_pickup_table.setFont(font); 
+    p.add(generate_pickup_table);
+    
+//aggregation label
+    JLabel aggro_label = new JLabel("Click to generate a table that displays aggregated data");
+    aggro_label.setFont(font); 
+    p.add(aggro_label);
+//aggregation table button
+    this.generate_aggregation_table = new JButton("Generate Aggregation Table");
+    this.generate_aggregation_table.setToolTipText("Generates a table displaying aggregated data between given dates and ordered by a specified parameter"); 
+    ListenForButton lfaggro = new ListenForButton();
+    this.generate_aggregation_table.addActionListener(lfaggro); 
+    generate_aggregation_table.setFont(font); 
+    p.add(generate_aggregation_table);
+    
     
 //Final window setting, adding panels
     setDefaultCloseOperation(EXIT_ON_CLOSE);
-    p.add(s, BorderLayout.SOUTH);   // adding south panel to north panel 
-    this.add(p); 
-    
-    //displayPickups();
-    //displayAggro();
-    
+    this.add(p);  
     this.setVisible(true);
     submit.requestFocus();
   }
