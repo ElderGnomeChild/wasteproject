@@ -1,4 +1,3 @@
-
 import java.sql.*;
 import java.awt.*;
 import java.awt.event.*; //user clicking buttons
@@ -222,12 +221,12 @@ public class waste extends JFrame{
     s.add(generate_aggregation_table);
     
 //sort by comboBox for pickup table
-    String[] pickupSort = {"id", "weight", "date", "waste_type", "site"}; 
+    String[] pickupSort = {"id","date"}; 
     this.sortBy_pickup = new JComboBox(pickupSort); 
     s.add(sortBy_pickup); 
     
 //sort by comboBox for aggregation table
-    String[] aggroSort = {"sum", "average", "waste_type"}; 
+    String[] aggroSort = {"sum", "average"}; 
     this.sortBy_aggro = new JComboBox(aggroSort); 
     s.add(sortBy_aggro);
     
@@ -238,6 +237,7 @@ public class waste extends JFrame{
     
 //spinner for picking start day for query 
     start_day = new JSpinner(new SpinnerDateModel(todaysDate, null, null,Calendar.DAY_OF_MONTH));
+    start_day.setToolTipText("THIS ONE IS THE START"); 
     JSpinner.DateEditor dateEditor1 = new JSpinner.DateEditor(start_day, "MM/dd/yy");
     start_day.setEditor(dateEditor1);
     date = year.getValue().toString();
@@ -245,6 +245,7 @@ public class waste extends JFrame{
     
 //spinner for picking end day for query
     end_day = new JSpinner(new SpinnerDateModel(todaysDate, null, null,Calendar.DAY_OF_MONTH));
+    end_day.setToolTipText("This one is the end"); 
     JSpinner.DateEditor dateEditor2 = new JSpinner.DateEditor(end_day, "MM/dd/yy");
     end_day.setEditor(dateEditor2);
     date = year.getValue().toString();
@@ -516,9 +517,9 @@ public class waste extends JFrame{
         day2 = input2.substring(8, 10); 
         year2 = input2.substring(24, 28); 
         month2 = monthfinder(tempMonth2); 
-        eday = day1;
-        emonth = month1;
-        eyear = year1;
+        eday = day2;
+        emonth = month2;
+        eyear = year2;
         
         String start = syear + "-" + smonth + "-" + sday; 
         String end = eyear + "-" + emonth + "-" + eday ;
@@ -532,21 +533,73 @@ public class waste extends JFrame{
         }
         
         String howToOrder = sortBy_pickup.getSelectedItem().toString(); 
+        howToOrder = "pickup." + howToOrder; 
         
         JDialog anything = new JDialog();
-        anything.setTitle("anything");
+        anything.setTitle("Pickups From " + start + " to " + end);
         Toolkit tk = Toolkit.getDefaultToolkit();      
         Dimension dim = tk.getScreenSize(); 
         anything.setSize(dim.width, dim.height);
         anything.setModal(true);
         JPanel pp = new JPanel();
-        // JTable table = displayPickups();
+        
         JTable table = displayPickups(start, end, howToOrder, ascdesc);
         pp.add(new JScrollPane(table));
         anything.add(pp);
         anything.setVisible(true);
       }
-      if (e.getSource() == generate_aggregation_table) {
+      else if (e.getSource() == generate_aggregation_table) {
+        
+        sdate = start_day.getValue().toString();
+        String input1, month1, day1, year1, tempMonth1; 
+        input1 = sdate; 
+        tempMonth1 = input1.substring(4, 7);
+        day1 = input1.substring(8, 10); 
+        year1 = input1.substring(24, 28); 
+        month1 = monthfinder(tempMonth1); 
+        sday = day1;
+        smonth = month1;
+        syear = year1;
+        
+        //end day data
+        edate = end_day.getValue().toString();
+        String input2, month2, day2, year2, tempMonth2; 
+        input2 = edate; 
+        tempMonth2 = input2.substring(4, 7);
+        day2 = input2.substring(8, 10); 
+        year2 = input2.substring(24, 28); 
+        month2 = monthfinder(tempMonth2); 
+        eday = day2;
+        emonth = month2;
+        eyear = year2;
+        
+        String start = syear + "-" + smonth + "-" + sday; 
+        String end = eyear + "-" + emonth + "-" + eday ;
+         
+        String ascendingOrDescending = upOrDown.getSelectedItem().toString();
+        if (ascendingOrDescending.equals("Ascending Order")){
+            ascdesc = false; 
+        }
+        else {
+            ascdesc = true;  
+        }
+        
+        String howToOrder = sortBy_aggro.getSelectedItem().toString();  
+        
+        JDialog anything = new JDialog();
+        anything.setTitle("Aggregated Data from " + start + " to " + end);
+        Toolkit tk = Toolkit.getDefaultToolkit();      
+        Dimension dim = tk.getScreenSize(); 
+        anything.setSize(dim.width, dim.height);
+        anything.setModal(true);
+        JPanel pp = new JPanel();
+        
+        JTable table = displayAggro(start, end, howToOrder, ascdesc);
+        pp.add(new JScrollPane(table));
+        anything.add(pp);
+        anything.setVisible(true);
+        
+      
       }
     }
   }
