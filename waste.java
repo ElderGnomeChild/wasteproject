@@ -72,11 +72,11 @@ public class waste extends JFrame{
   
   private static final String DB_URL = "jdbc:sqlite:dataWaste.db";
   
-  private PickupTableModel tableModel = new PickupTableModel();
-  private JTable table = new JTable(tableModel);
+//   private PickupTableModel tableModel = new PickupTableModel();
+//   private JTable table = new JTable(tableModel);
   
-  private AggroTableModel aggroModel = new AggroTableModel();
-  private JTable aggroTable = new JTable(aggroModel);
+//   private AggroTableModel aggroModel = new AggroTableModel();
+//   private JTable aggroTable = new JTable(aggroModel);
   
 //CONSTRUCTOR:
   public waste(){
@@ -274,7 +274,15 @@ public class waste extends JFrame{
    */
   
   //all pickups
-  private void displayPickups() {
+  private JTable displayPickups() {
+    PickupTableModel tableModel = new PickupTableModel();
+    // private JTable table = new JTable(tableModel);
+    
+    // private AggroTableModel aggroModel = new AggroTableModel();
+    // private JTable aggroTable = new JTable(aggroModel);
+
+
+
     try (Connection conn = DriverManager.getConnection(DB_URL)) {
       Statement s = conn.createStatement();
       ResultSet pResults = s.executeQuery("select Pickup.id, Pickup.weight, Pickup.date, Site.name as sname, Waste_Type.name as wname, Company.name as cname from Pickup join Company on Company.id = Pickup.company_id join Waste_Type on Waste_Type.id = Pickup.waste_type_id join Site on Site.id = Pickup.site_id");
@@ -289,15 +297,21 @@ public class waste extends JFrame{
         Pickup p = new Pickup(id, weight, date, site, waste_type, company);
         tableModel.addInstance(p);
       } 
+
+        
     } catch (SQLException ex) {
       JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
       ex.printStackTrace();
     }
+
+    JTable table = new JTable(tableModel);
+    return table;
   }
   
   
   //pickups with start/end dates, ordered by either by date or by id, ascending or descending
-  private void displayPickups(String startDate, String endDate, String order, Boolean descending) {
+  private JTable displayPickups(String startDate, String endDate, String order, Boolean descending) {
+    PickupTableModel tableModel = new PickupTableModel();
     try (Connection conn = DriverManager.getConnection(DB_URL)) {
       Statement s = conn.createStatement();
       String desc;
@@ -321,9 +335,14 @@ public class waste extends JFrame{
       JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
       ex.printStackTrace();
     }
+    JTable table = new JTable(tableModel);
+    return table;
   }
   
-  private void displayAggro() {
+  private JTable displayAggro() {
+
+    AggroTableModel aggroModel = new AggroTableModel();
+
     try (Connection conn = DriverManager.getConnection(DB_URL)) {
       Statement s = conn.createStatement();
       ResultSet aResults = s.executeQuery("select waste_type.name as 'waste type', sum(weight) as sum, avg(weight) as average from pickup join waste_type on waste_type.id = pickup.waste_type_id group by waste_type.name");
@@ -340,9 +359,15 @@ public class waste extends JFrame{
       JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
       ex.printStackTrace();
     }
+
+    JTable table = new JTable(aggroModel);
+    return table;
   }
   
-  private void displayAggro(String startDate, String endDate, String order, Boolean descending) {
+  private JTable displayAggro(String startDate, String endDate, String order, Boolean descending) {
+
+    AggroTableModel aggroModel = new AggroTableModel();
+
     try (Connection conn = DriverManager.getConnection(DB_URL)) {
       Statement s = conn.createStatement();
       String desc;
@@ -362,6 +387,10 @@ public class waste extends JFrame{
       JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
       ex.printStackTrace();
     }
+
+    JTable table = new JTable(aggroModel);
+    return table;
+
   }
   private String monthfinder(String tempMonth){
    String month_num = "";  
@@ -511,12 +540,11 @@ public class waste extends JFrame{
         anything.setSize(dim.width, dim.height);
         anything.setModal(true);
         JPanel pp = new JPanel();
-        displayPickups();
-        //displayPickups(start, end, howToOrder, ascdesc);
+        // JTable table = displayPickups();
+        JTable table = displayPickups(start, end, howToOrder, ascdesc);
         pp.add(new JScrollPane(table));
         anything.add(pp);
         anything.setVisible(true);
-        
       }
       if (e.getSource() == generate_aggregation_table) {
       }
