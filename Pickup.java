@@ -6,21 +6,37 @@ public class Pickup {
     private String site;
     private String waste_type;
     private String company;
+    private String smalldate;
 
-    public Pickup (int id, double weight, String date, String site, String waste_type, String company) {
+    public Pickup (int id, double weight, String date, String site, String waste_type, String company, String smalldate) {
         this.id = id;
         this.weight = weight;
         this.date = date;
         this.site = site;
         this.waste_type = waste_type;
         this.company = company;
-    }
+        this.smalldate = smalldate;
+        }
 
    
     public int getId() {
         return id;
     }
 
+    /**
+     * @return the smalldate
+     */
+    public String getSmalldate() {
+        return smalldate;
+    }
+
+    /**
+     * @param smalldate the smalldate to set
+     */
+    public void setSmalldate(String smalldate) {
+        this.smalldate = smalldate;
+    }
+    
     /**
      * @return the company
      */
