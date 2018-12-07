@@ -15,8 +15,8 @@
 
 CREATE TABLE Waste_Type (
 	id INTEGER PRIMARY KEY AUTOINCREMENT, 
-	name VARCHAR(32) NOT NULL, 
-	service INTEGER NOT NULL);
+	name VARCHAR(32) NOT NULL); 
+	-- service INTEGER NOT NULL);
 	-- service VARCHAR(32) NOT NULL, 
 	-- CONSTRAINT fk_column FOREIGN KEY (service) REFERENCES WTEnum (type)
 -- );
@@ -60,18 +60,18 @@ INSERT INTO Site (name, address) VALUES
 	("Westminster//Hogle", "1700 S 1300 E"),
 	("Garfield Home", "1173 Garfield Ave");
 
-INSERT INTO Waste_Type (name, service) VALUES
-	("Recycling", "30ROREC"),
-	("Trash", "30ROTR"),
-	("Cardboard", "30ROREC"),
-	("C&D", "30ROTR"),
-	("Food", "30ROTR"),
-	("E-Waste", "30ROREC");
+INSERT INTO Waste_Type (name) VALUES
+	("Recycling"),
+	("Trash"),
+	("Cardboard"),
+	("C&D"),
+	("Food"),
+	("E-Waste");
 
 INSERT INTO Pickup (weight, date, site_Id, waste_type_Id, company_id) VALUES
-	(0.50, 07-01-2015, 1, 1, 1),
-	(0.23, 07-03-2015, 1, 1, 1),
-	(0.95, 04-01-2016, 3, 2, 1);
+	(0.50, '07-01-2015', 1, 1, 1),
+	(0.23, '07-03-2015', 1, 1, 1),
+	(0.95, '04-01-2016', 3, 2, 1);
 
 
 
