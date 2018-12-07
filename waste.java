@@ -286,7 +286,7 @@ public class waste extends JFrame{
 
     try (Connection conn = DriverManager.getConnection(DB_URL)) {
       Statement s = conn.createStatement();
-      ResultSet pResults = s.executeQuery("select Pickup.id, Pickup.weight, Pickup.date, Site.name as sname, Waste_Type.name as wname, Company.name as cname from Pickup join Company on Company.id = Pickup.company_id join Waste_Type on Waste_Type.id = Pickup.waste_type_id join Site on Site.id = Pickup.site_id");
+      ResultSet pResults = s.executeQuery("select Pickup.id, Pickup.weight, Pickup.date, Site.name as sname, Waste_Type.name as wname, Company.name as cname, smalldate from Pickup join Company on Company.id = Pickup.company_id join Waste_Type on Waste_Type.id = Pickup.waste_type_id join Site on Site.id = Pickup.site_id");
       while (pResults.next()) {
         int id = pResults.getInt(1);
         double weight = pResults.getDouble(2);
@@ -294,8 +294,9 @@ public class waste extends JFrame{
         String site = pResults.getString(4);
         String waste_type = pResults.getString(5);
         String company = pResults.getString(6);
+        String smalldate = pResults.getString(7);
         
-        Pickup p = new Pickup(id, weight, date, site, waste_type, company);
+        Pickup p = new Pickup(id, weight, date, site, waste_type, company, smalldate);
         tableModel.addInstance(p);
       } 
 
@@ -318,7 +319,7 @@ public class waste extends JFrame{
       String desc;
       if(descending){desc = new String(" DESC");}
       else {desc = new String(" ASC");}
-      ResultSet pResults = s.executeQuery("select Pickup.id, Pickup.weight, Pickup.date, Site.name as sname, Waste_Type.name as wname, Company.name as cname from Pickup join Company on Company.id = Pickup.company_id join Waste_Type on Waste_Type.id = Pickup.waste_type_id join Site on Site.id = Pickup.site_id where Pickup.date >= '" + startDate + "' and Pickup.date <= '" + endDate + "' order by " + order + desc);
+      ResultSet pResults = s.executeQuery("select Pickup.id, Pickup.weight, Pickup.date, Site.name as sname, Waste_Type.name as wname, Company.name as cname, smalldate from Pickup join Company on Company.id = Pickup.company_id join Waste_Type on Waste_Type.id = Pickup.waste_type_id join Site on Site.id = Pickup.site_id where Pickup.date >= '" + startDate + "' and Pickup.date <= '" + endDate + "' order by " + order + desc);
       while (pResults.next()) {
         int id = pResults.getInt(1);
         double weight = pResults.getDouble(2);
@@ -326,9 +327,10 @@ public class waste extends JFrame{
         String site = pResults.getString(4);
         String waste_type = pResults.getString(5);
         String company = pResults.getString(6);
+        String smalldate = pResults.getString(7);
         
-        Pickup p = new Pickup(id, weight, date, site, waste_type, company);
-        System.out.println(id + weight + date + site + waste_type + company);
+        Pickup p = new Pickup(id, weight, date, site, waste_type, company, smalldate);
+        // System.out.println(id + weight + date + site + waste_type + company);
         
         tableModel.addInstance(p);
       } 
@@ -393,6 +395,58 @@ public class waste extends JFrame{
     return table;
 
   }
+
+  private void addCompany(String name, String address, String description) {
+    try (Connection conn = DriverManager.getConnection(DB_URL)) {
+        
+        PreparedStatement statement = conn.prepareStatement(
+            "insert into Company (name, address, description) VALUES (?, ?, ?)"
+        );
+
+        statement.setString(1, name);
+        statement.setString(2, address);
+        statement.setString(3, description);
+        statement.execute();
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Unable to connect to the database. :(", "Database error!", JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+    }
+}
+
+  private void addSite(String name, String address) {
+    try (Connection conn = DriverManager.getConnection(DB_URL)) {
+        
+        PreparedStatement statement = conn.prepareStatement(
+            "insert into Site (name, address) VALUES ( ?, ?)"
+        );
+
+        statement.setString(1, name);
+        statement.setString(2, address);
+        statement.execute();
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Unable to connect to the database. :(", "Database error!", JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+    }
+}
+
+  private void addWaste_Type(String name) {
+    try (Connection conn = DriverManager.getConnection(DB_URL)) {
+        
+        PreparedStatement statement = conn.prepareStatement(
+            "insert into Waste_Type(name) VALUES (?)"
+        );
+
+        statement.setString(1, name);
+        statement.execute();
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Unable to connect to the database. :(", "Database error!", JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+    }
+}
+
   private String monthfinder(String tempMonth){
    String month_num = "";  
         if (tempMonth.equals("Jan")){month_num = "01";}
@@ -443,7 +497,7 @@ public class waste extends JFrame{
           //company
           String cname = company.getSelectedItem().toString();
           PreparedStatement statement = conn.prepareStatement(
-                                                              "select id from company where name = " + "'"+cname+"'");
+            "select id from company where name = " + "'"+cname+"'");
           ResultSet results = statement.executeQuery();
           while(results.next()) {
             companyId = results.getInt("id");
@@ -455,7 +509,7 @@ public class waste extends JFrame{
           //site
           String sname = site.getSelectedItem().toString();
           statement = conn.prepareStatement(
-                                            "select id from site where name = " + "'"+sname+"'");
+            "select id from site where name = " + "'"+sname+"'");
           results = statement.executeQuery();
           while(results.next()) {
             siteId = results.getInt("id");
@@ -466,7 +520,7 @@ public class waste extends JFrame{
           //wastetype
           String wname = waste_type.getSelectedItem().toString();
           statement = conn.prepareStatement(
-                                            "select id from waste_type where name = " + "'"+wname+"'");
+            "select id from waste_type where name = " + "'"+wname+"'");
           results = statement.executeQuery();
           while(results.next()) {
             wasteTypeId = results.getInt("id");
@@ -474,18 +528,19 @@ public class waste extends JFrame{
           System.out.println("wid: " + wasteTypeId);
           
           String doot = yearValue+"-"+monthValue+"-"+dayValue;
-          PreparedStatement eyedee = conn.prepareStatement(
-                                                           "select id from pickup order by id desc limit 1"  
-                                                          );
+          String littledoot = yearValue+monthValue;
+          // PreparedStatement eyedee = conn.prepareStatement(
+          //   "select id from pickup order by id desc limit 1"  
+          // );
        
-          ResultSet i = eyedee.executeQuery();
+          // ResultSet i = eyedee.executeQuery();
           
-          int id = i.getInt("id");   
-          id++;
+          // int id = i.getInt("id");   
+          // id++;
           
           statement = conn.prepareStatement(
-                                            "insert into pickup values(" + id + ", " + weight + ", " + "'" +doot+ "'" + ", " + siteId + ", " + wasteTypeId +", " + companyId +")"
-                                           );
+            "insert into pickup (weight, date, site_id, waste_type_id, company_id, smalldate) values (" + weight + ", " + "'" +doot+ "'" + ", " + siteId + ", " + wasteTypeId +", " + companyId + ", '" +littledoot+ "')"
+          );
           
           statement.execute();
           System.out.println("done");
