@@ -24,8 +24,8 @@ public class waste extends JFrame{
   public static void main(String[] aargs){
     new waste();
   }
-// All Jthings for north panel
-  private JButton submit;
+// All Jthings for insertion
+  private JButton submit, insert_C, insert_S, insert_W, show_C, show_S, show_W;
   private JComboBox waste_type;     
   private JComboBox company;    
   private JComboBox site;
@@ -34,9 +34,10 @@ public class waste extends JFrame{
   private JSpinner day;
   private JSpinner year;
   private JLabel displayLabel; 
-  private JTextField tf1; 
+  private JTextField tf1, tf2, tf3, tf4;
+  private ListenForButton lfb; 
   
-//Instance data for imput from NORTH PANEL 
+//Instance data for insertion
   private String date;
   private String dayValue;
   private String monthValue;
@@ -47,7 +48,7 @@ public class waste extends JFrame{
   private double weight;
   
   
-//All Jthings for SOUTH PANEL
+//All Jthings for queries
   private JComboBox sortBy_pickup;
   private JComboBox sortBy_aggro;
   private JComboBox upOrDown;
@@ -57,7 +58,7 @@ public class waste extends JFrame{
   private JSpinner start_day; 
   
   
-//instance data for south panel
+//instance data queries
   private String sdate;
   private String edate;
   private String sday;
@@ -68,6 +69,13 @@ public class waste extends JFrame{
   private String eyear;
   private boolean ascdesc;
   
+  
+//buttons for entity insertion
+  private JButton c_insert;
+  private JButton s_insert;
+  private JButton w_insert; 
+  
+  private Font font;
   
   private static final String DB_URL = "jdbc:sqlite:dataWaste.db";
  
@@ -80,10 +88,10 @@ public class waste extends JFrame{
     this.setSize(1200, 800);
     this.setLocationRelativeTo(null);        
     this.setTitle("WasteManager");
-    Font font = new Font("Times New Roman", Font.PLAIN, 20);
+    font = new Font("Times New Roman", Font.PLAIN, 20);
     
     // ********************************************** INSERT PORTION ************************************************
-    JPanel p = new JPanel(new GridLayout(0,2)); //p is the north panel
+    JPanel p = new JPanel(new GridLayout(0,2)); 
     
     //weight input label
     JLabel weight_label = new JLabel("Enter the pickup weight in this text box");
@@ -109,18 +117,14 @@ public class waste extends JFrame{
       
 //generate new companies
       
-      PreparedStatement num = umbreon.prepareStatement(
-                                                       "select count(*) from company"  
-                                                      );
+      PreparedStatement num = umbreon.prepareStatement( "select count(*) from company" );
       
       ResultSet i = num.executeQuery();
       int numberOfCompanies = i.getInt("count(*)"); 
       
       String[] companies = new String[numberOfCompanies];
       
-      PreparedStatement getNames = umbreon.prepareStatement(
-                                                            "select name from company order by id"    
-                                                           );
+      PreparedStatement getNames = umbreon.prepareStatement("select name from company order by id" );
       
       ResultSet names = getNames.executeQuery();
       String currentName;
@@ -130,7 +134,7 @@ public class waste extends JFrame{
         companies[count] = currentName;
         count++;
       }
-      //label for company combo box
+//label for company combo box
       JLabel company_label = new JLabel("Select the company responsible for this pickup");
       company_label.setFont(font); 
       p.add(company_label);
@@ -141,18 +145,14 @@ public class waste extends JFrame{
       p.add(this.company);
       
 //generate new sites
-      num = umbreon.prepareStatement(
-                                     "select count(*) from site"  
-                                    );
+      num = umbreon.prepareStatement("select count(*) from site");
       
       i = num.executeQuery();
       int numberOfSites = i.getInt("count(*)"); 
       
       String[] sites = new String[numberOfSites];
       
-      PreparedStatement getSites = umbreon.prepareStatement(
-                                                            "select name from site order by id"    
-                                                           );
+      PreparedStatement getSites = umbreon.prepareStatement("select name from site order by id");
       
       names = getSites.executeQuery();
       count = 0;
@@ -174,17 +174,12 @@ public class waste extends JFrame{
       
       
 //generate new waste types
-      num = umbreon.prepareStatement(
-                                     "select count(*) from waste_type"  
-                                    );
+      num = umbreon.prepareStatement("select count(*) from waste_type");
       i = num.executeQuery();
       int numberOfWastes = i.getInt("count(*)"); 
       
       String[] waste_types = new String[numberOfWastes];
-      
-      PreparedStatement getWastes = umbreon.prepareStatement(
-                                                             "select name from waste_type order by id"    
-                                                            );
+      PreparedStatement getWastes = umbreon.prepareStatement("select name from waste_type order by id");
       
       names = getWastes.executeQuery();
       count = 0;
@@ -228,20 +223,15 @@ public class waste extends JFrame{
     //submit button
     submit = new JButton("Insert Pickup");
     submit.setToolTipText("Adds a new row to the pickup table with parameters in text box and dropdown menus. Configure these correctly before clicking.");
-    ListenForButton lfb = new ListenForButton();
+    lfb = new ListenForButton();
     submit.addActionListener(lfb);
     submit.setFont(font); 
     p.add(submit);
     
 //*********************************** QUERY PORTION ******************************************
- 
-    JLabel above = new JLabel("The  above boxes are for inserting data");
-    above.setFont(font);
-    JLabel below = new JLabel("The below boxes are for retrieving data");
-    below.setFont(font);
-    p.add(above);
+    p.add(new JLabel());   // new lines to seperate portion on the main interface
     p.add(new JLabel());
-    p.add(below);
+    p.add(new JLabel());
     p.add(new JLabel());
     
     
@@ -265,7 +255,7 @@ public class waste extends JFrame{
     sortBy_aggro.setFont(font); 
     p.add(sortBy_aggro);
     
-    //ascdesc label
+//ascdesc label
     JLabel ascdesc_label = new JLabel("Ascending or Descending order?");
     ascdesc_label.setFont(font); 
     p.add(ascdesc_label);
@@ -311,7 +301,7 @@ public class waste extends JFrame{
     this.generate_pickup_table = new JButton("Generate Pickup Table");
     this.generate_pickup_table.setToolTipText("Generates a table displaying all pickups between requested dates"); 
     ListenForButton lfpick = new ListenForButton();
-    this.generate_pickup_table.addActionListener(lfpick); 
+    this.generate_pickup_table.addActionListener(lfb); 
     generate_pickup_table.setFont(font); 
     p.add(generate_pickup_table);
     
@@ -323,9 +313,50 @@ public class waste extends JFrame{
     this.generate_aggregation_table = new JButton("Generate Aggregation Table");
     this.generate_aggregation_table.setToolTipText("Generates a table displaying aggregated data between given dates and ordered by a specified parameter"); 
     ListenForButton lfaggro = new ListenForButton();
-    this.generate_aggregation_table.addActionListener(lfaggro); 
+    this.generate_aggregation_table.addActionListener(lfb); 
     generate_aggregation_table.setFont(font); 
     p.add(generate_aggregation_table);
+    
+//***************************************************************************** ENTITY INSERTION PORTION **********************************************************************//    
+    p.add(new JLabel());  //adding new lines to seperate section on the main interface
+    p.add(new JLabel());
+    p.add(new JLabel());
+    p.add(new JLabel());
+    
+    //label for company button
+    JLabel c_but = new JLabel("This button allows you to add a new company");
+    c_but.setFont(font);
+    p.add(c_but); 
+    //insert company button
+    c_insert = new JButton("Company"); 
+    c_insert.setToolTipText("Add a new company to the database. this is irreversable");
+    c_insert.addActionListener(lfb);
+    c_insert.setFont(font);
+    p.add(c_insert);
+    
+    //label for site button
+    JLabel s_but = new JLabel("This button allows you to add a new pickup site");
+    s_but.setFont(font);
+    p.add(s_but); 
+    //insert site button
+    s_insert = new JButton("Pickup Site"); 
+    s_insert.setToolTipText("Add a new pickup site to the database. this is irreversable");
+    s_insert.addActionListener(lfb);
+    s_insert.setFont(font);
+    p.add(s_insert);
+    
+    //label for waste type button
+    JLabel w_but = new JLabel("This button allows you to add a new waste type");
+    w_but.setFont(font);
+    p.add(w_but); 
+    //insert waste type button
+    w_insert = new JButton("Waste Type"); 
+    w_insert.setToolTipText("Add a new waste type to track into the database. this is irreversable");
+    w_insert.addActionListener(lfb);
+    w_insert.setFont(font);
+    p.add(w_insert);
+    
+    
     
     
 //Final window setting, adding panels
@@ -535,6 +566,7 @@ public class waste extends JFrame{
   //SEPARATE CLASS
   private class ListenForButton implements ActionListener{
     public void actionPerformed(ActionEvent e) {
+      //submit button
       if (e.getSource() == submit) {
         try {
           weight = Double.parseDouble(tf1.getText());
@@ -619,6 +651,7 @@ public class waste extends JFrame{
         }   
       }
       
+      //generate pickup table button
       else if (e.getSource() == generate_pickup_table) {
         //start day data
         sdate = start_day.getValue().toString();
@@ -671,6 +704,8 @@ public class waste extends JFrame{
         anything.add(pp);
         anything.setVisible(true);
       }
+      
+      //aggregation table button
       else if (e.getSource() == generate_aggregation_table) {
         
         sdate = start_day.getValue().toString();
@@ -721,9 +756,195 @@ public class waste extends JFrame{
         pp.add(new JScrollPane(table));
         anything.add(pp);
         anything.setVisible(true);
-        
-      
       }
+      else if (e.getSource() == c_insert) {
+        JDialog ccc = new JDialog();
+        ccc.setTitle("Companies");
+        ccc.setSize(600,300);
+        ccc.setLocationRelativeTo(null);
+        ccc.setModal(true);
+        JPanel ppp = new JPanel(new GridLayout(0,2));
+        
+        JLabel lab1, lab2, lab3, lab4, lab5, labnull1, labnull2;
+        lab1 = new JLabel("Company name");
+        lab2 = new JLabel("Company address");
+        lab3 = new JLabel("Company description");
+        lab4 = new JLabel("insert company");
+        lab5 = new JLabel("Show companies");
+        labnull1 = new JLabel();
+        labnull2 = new JLabel();
+        lab1.setFont(font);
+        lab2.setFont(font);
+        lab3.setFont(font);
+        lab4.setFont(font);
+        lab5.setFont(font);
+        tf2 = new JTextField("", 10);
+        tf3 = new JTextField("", 10);
+        tf4 = new JTextField("", 10);
+        tf2.setFont(font);
+        tf3.setFont(font);
+        tf4.setFont(font);
+        ppp.add(lab1);
+        ppp.add(tf2);
+        ppp.add(lab2);
+        ppp.add(tf3);
+        ppp.add(lab3);
+        ppp.add(tf4);
+        ppp.add(lab4);
+        insert_C = new JButton("insert");
+        insert_C.addActionListener(lfb);
+        insert_C.setFont(font);
+        ppp.add(insert_C);
+        ppp.add(labnull1);
+        ppp.add(labnull2);
+        ppp.add(lab5);
+        show_C = new JButton("show");
+        show_C.addActionListener(lfb);
+        show_C.setFont(font);
+        ppp.add(show_C);
+        ccc.add(ppp);
+        
+        ccc.setVisible(true);
+        
+      }
+      else if (e.getSource() == s_insert) {
+        JDialog ccc = new JDialog();
+        ccc.setTitle("Sites");
+        ccc.setSize(600,300);
+        ccc.setLocationRelativeTo(null);
+        ccc.setModal(true);
+        JPanel ppp = new JPanel(new GridLayout(0,2));
+        
+        JLabel lab1, lab2, lab3, lab4, lab5, labnull1, labnull2;
+        lab1 = new JLabel("Site name");
+        lab2 = new JLabel("Site address");
+        lab3 = new JLabel("Insert site");
+        lab5 = new JLabel("Show sites");
+        labnull1 = new JLabel();
+        labnull2 = new JLabel();
+        lab1.setFont(font);
+        lab2.setFont(font);
+        lab3.setFont(font);
+        lab5.setFont(font);
+        tf2 = new JTextField("", 10);
+        tf3 = new JTextField("", 10);
+        tf2.setFont(font);
+        tf3.setFont(font);
+        ppp.add(lab1);
+        ppp.add(tf2);
+        ppp.add(lab2);
+        ppp.add(tf3);
+        ppp.add(lab3);
+        insert_S = new JButton("insert");
+        insert_S.addActionListener(lfb);
+        insert_S.setFont(font);
+        ppp.add(insert_S);
+        ppp.add(labnull1);
+        ppp.add(labnull2);
+        ppp.add(lab5);
+        show_S = new JButton("show");
+        show_S.addActionListener(lfb);
+        show_S.setFont(font);
+        ppp.add(show_S);
+        ccc.add(ppp);
+        
+        ccc.setVisible(true);
+        
+      }
+      else if (e.getSource() == w_insert) {
+        JDialog ccc = new JDialog();
+        ccc.setTitle("Waste Types");
+        ccc.setSize(600,300);
+        ccc.setLocationRelativeTo(null);
+        ccc.setModal(true);
+        JPanel ppp = new JPanel(new GridLayout(0,2));
+        
+        JLabel lab1, lab2, lab3, lab4, lab5, labnull1, labnull2;
+        lab1 = new JLabel("Waste type name");
+        lab3 = new JLabel("Insert waste type");
+        lab5 = new JLabel("Show waste type");
+        labnull1 = new JLabel();
+        labnull2 = new JLabel();
+        lab1.setFont(font);
+        lab3.setFont(font);
+        lab5.setFont(font);
+        tf2 = new JTextField("", 10);
+        tf2.setFont(font);
+        ppp.add(lab1);
+        ppp.add(tf2);
+        ppp.add(lab3);
+        insert_W = new JButton("insert");
+        insert_W.addActionListener(lfb);
+        insert_W.setFont(font);
+        ppp.add(insert_W);
+        ppp.add(labnull1);
+        ppp.add(labnull2);
+        ppp.add(lab5);
+        show_W = new JButton("show");
+        show_W.addActionListener(lfb);
+        show_W.setFont(font);
+        ppp.add(show_W);
+        ccc.add(ppp);
+        
+        ccc.setVisible(true);
+        
+        
+      }
+      else if (e.getSource() == insert_C){
+        int ask = JOptionPane.showConfirmDialog(waste.this, "Are you sure?");
+        if (ask == JOptionPane.YES_OPTION){
+          JOptionPane.showMessageDialog(waste.this, "Company added! Please restart the program to see changes");
+          //get tf2,3,4
+          String name, desc, addr;
+          name = tf2.getText();
+          addr = tf3.getText(); 
+          desc = tf4.getText(); 
+          addCompany(name,addr,desc); 
+          
+        }
+      }
+      else if (e.getSource() == insert_S){
+        int ask = JOptionPane.showConfirmDialog(waste.this, "Are you sure?");
+        if (ask == JOptionPane.YES_OPTION){
+          JOptionPane.showMessageDialog(waste.this, "Site Added! Please restart the program to see changes");
+          //tf2,3
+          String name, addr;
+          name = tf2.getText();
+          addr = tf3.getText(); 
+          addSite(name,addr);
+        }
+      }
+      else if (e.getSource() == insert_W){
+        int ask = JOptionPane.showConfirmDialog(waste.this, "Are you sure?");
+        if (ask == JOptionPane.YES_OPTION){
+          JOptionPane.showMessageDialog(waste.this, "Waste Type Added! Please restart the program to see changes");
+          String name = tf2.getText();
+          addWaste_Type(name);
+        }
+      }
+      
+      else if (e.getSource() == show_C){
+        
+      }
+      
+      else if (e.getSource() == show_S){
+        
+      }
+      
+      else if (e.getSource() == show_W){
+        
+      }
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
     }
   }
 }
