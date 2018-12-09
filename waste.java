@@ -1097,15 +1097,48 @@ public class waste extends JFrame{
       }
       
       else if (e.getSource() == show_C){
+        JDialog anything = new JDialog();
+        anything.setTitle("All Companies");
+        Toolkit tk = Toolkit.getDefaultToolkit();      
+        Dimension dim = tk.getScreenSize(); 
+        anything.setSize(dim.width, dim.height);
+        anything.setModal(true);
+        JPanel pp = new JPanel();
         
+        JTable table = showCompanies();
+        pp.add(new JScrollPane(table));
+        anything.add(pp);
+        anything.setVisible(true);
       }
       
       else if (e.getSource() == show_S){
+        JDialog anything = new JDialog();
+        anything.setTitle("All Pickup Sites");
+        Toolkit tk = Toolkit.getDefaultToolkit();      
+        Dimension dim = tk.getScreenSize(); 
+        anything.setSize(dim.width, dim.height);
+        anything.setModal(true);
+        JPanel pp = new JPanel();
         
+        JTable table = showSites();
+        pp.add(new JScrollPane(table));
+        anything.add(pp);
+        anything.setVisible(true);
       }
       
       else if (e.getSource() == show_W){
+        JDialog anything = new JDialog();
+        anything.setTitle("All Waste Types");
+        Toolkit tk = Toolkit.getDefaultToolkit();      
+        Dimension dim = tk.getScreenSize(); 
+        anything.setSize(dim.width, dim.height);
+        anything.setModal(true);
+        JPanel pp = new JPanel();
         
+        JTable table = showWaste_Types();
+        pp.add(new JScrollPane(table));
+        anything.add(pp);
+        anything.setVisible(true);
       }
       
       else if (e.getSource() == allPickups){
