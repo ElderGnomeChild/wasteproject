@@ -10,6 +10,6 @@ public class SiteModel extends EntityTableModel<Site> {
         String.class, Site::getAddress, Site::setAddress);
 
     public SiteModel() {
-        setColumns(ID, NAME, ADDRESS);
+        setColumns(NAME, ADDRESS);
     }
 }

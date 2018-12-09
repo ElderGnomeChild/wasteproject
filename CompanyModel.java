@@ -13,6 +13,6 @@ public class CompanyModel extends EntityTableModel<Company> {
         String.class, Company::getDescription, Company::setDescription);
 
     public CompanyModel() {
-        setColumns(ID, NAME, ADDRESS, DESC);
+        setColumns(NAME, ADDRESS, DESC);
     }
 }

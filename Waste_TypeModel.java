@@ -7,6 +7,6 @@ public class Waste_TypeModel extends EntityTableModel<Waste_Type> {
         String.class, Waste_Type::getName, Waste_Type::setName);
 
     public Waste_TypeModel() {
-        setColumns(ID, NAME);
+        setColumns(NAME);
     }
 }

@@ -606,13 +606,15 @@ public class waste extends JFrame{
       Statement statement = conn.createStatement();
       ResultSet cResults = statement.executeQuery("select * from company");
 
-      int id = cResults.getInt(1);
-      String name = cResults.getString(2);
-      String address = cResults.getString(3);
-      String description = cResults.getString(4);
+      while(cResults.next()) {
+        int id = cResults.getInt(1);
+        String name = cResults.getString(2);
+        String address = cResults.getString(3);
+        String description = cResults.getString(4);
 
-      Company c = new Company(id, name, address, description);
-      cm.addInstance(c);
+        Company c = new Company(id, name, address, description);
+        cm.addInstance(c);
+      }
 
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(null, "Unable to connect to the database. :(", "Database error!", JOptionPane.ERROR_MESSAGE);
@@ -629,13 +631,15 @@ public class waste extends JFrame{
         
       Statement statement = conn.createStatement();
       ResultSet cResults = statement.executeQuery("select * from site");
+      
+      while(cResults.next()){
+        int id = cResults.getInt(1);
+        String name = cResults.getString(2);
+        String address = cResults.getString(3);
 
-      int id = cResults.getInt(1);
-      String name = cResults.getString(2);
-      String address = cResults.getString(3);
-
-      Site s = new Site(id, name, address);
-      sm.addInstance(s);
+        Site s = new Site(id, name, address);
+        sm.addInstance(s);
+        }
 
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(null, "Unable to connect to the database. :(", "Database error!", JOptionPane.ERROR_MESSAGE);
@@ -653,11 +657,13 @@ public class waste extends JFrame{
       Statement statement = conn.createStatement();
       ResultSet cResults = statement.executeQuery("select * from waste_type");
 
-      int id = cResults.getInt(1);
-      String name = cResults.getString(2);
+      while(cResults.next()) {
+        int id = cResults.getInt(1);
+        String name = cResults.getString(2);
 
-      Waste_Type w = new Waste_Type(id, name);
-      wm.addInstance(w);
+        Waste_Type w = new Waste_Type(id, name);
+        wm.addInstance(w);
+      }
 
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(null, "Unable to connect to the database. :(", "Database error!", JOptionPane.ERROR_MESSAGE);
