@@ -599,6 +599,75 @@ public class waste extends JFrame{
     return table;
   }
 
+  private JTable showCompanies() {
+    CompanyModel cm = new CompanyModel();
+    try (Connection conn = DriverManager.getConnection(DB_URL)) {
+        
+      Statement statement = conn.createStatement();
+      ResultSet cResults = statement.executeQuery("select * from company");
+
+      int id = cResults.getInt(1);
+      String name = cResults.getString(2);
+      String address = cResults.getString(3);
+      String description = cResults.getString(4);
+
+      Company c = new Company(id, name, address, description);
+      cm.addInstance(c);
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Unable to connect to the database. :(", "Database error!", JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+    }
+
+    JTable table = new JTable(cm);
+    return table;
+  }
+
+  private JTable showSites() {
+    SiteModel sm = new SiteModel();
+    try (Connection conn = DriverManager.getConnection(DB_URL)) {
+        
+      Statement statement = conn.createStatement();
+      ResultSet cResults = statement.executeQuery("select * from site");
+
+      int id = cResults.getInt(1);
+      String name = cResults.getString(2);
+      String address = cResults.getString(3);
+
+      Site s = new Site(id, name, address);
+      sm.addInstance(s);
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Unable to connect to the database. :(", "Database error!", JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+    }
+
+    JTable table = new JTable(sm);
+    return table;
+  }
+
+  private JTable showWaste_Types() {
+    Waste_TypeModel wm = new Waste_TypeModel();
+    try (Connection conn = DriverManager.getConnection(DB_URL)) {
+        
+      Statement statement = conn.createStatement();
+      ResultSet cResults = statement.executeQuery("select * from waste_type");
+
+      int id = cResults.getInt(1);
+      String name = cResults.getString(2);
+
+      Waste_Type w = new Waste_Type(id, name);
+      wm.addInstance(w);
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Unable to connect to the database. :(", "Database error!", JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+    }
+
+    JTable table = new JTable(wm);
+    return table;
+  }
+
   private void addCompany(String name, String address, String description) {
     try (Connection conn = DriverManager.getConnection(DB_URL)) {
         
