@@ -49,6 +49,11 @@ public class waste extends JFrame{
   
   
 //All Jthings for queries
+  //all data
+  private JComboBox wt_sort;
+  private JButton allPickups;
+  private JButton dataByMonth; 
+  //specific data
   private JComboBox sortBy_pickup;
   private JComboBox sortBy_aggro;
   private JComboBox upOrDown;
@@ -76,6 +81,7 @@ public class waste extends JFrame{
   private JButton w_insert; 
   
   private Font font;
+  private Font bigFont;
   
   private static final String DB_URL = "jdbc:sqlite:dataWaste.db";
  
@@ -85,13 +91,18 @@ public class waste extends JFrame{
 // setting window parameters 
     Toolkit tk = Toolkit.getDefaultToolkit();      
     Dimension dim = tk.getScreenSize(); 
-    this.setSize(1200, 800);
+    this.setSize(1200, 1000);
     this.setLocationRelativeTo(null);        
     this.setTitle("WasteManager");
     font = new Font("Times New Roman", Font.PLAIN, 20);
-    
-    // ********************************************** INSERT PORTION ************************************************
+    bigFont = new Font("Times New Roman", Font.BOLD, 30); 
     JPanel p = new JPanel(new GridLayout(0,2)); 
+      
+    // ********************************************** INSERT PORTION ************************************************
+    JLabel insert_portion = new JLabel("Insert Data:");
+    insert_portion.setFont(bigFont); 
+    p.add(insert_portion);
+    p.add(new JLabel()); 
     
     //weight input label
     JLabel weight_label = new JLabel("Enter the pickup weight in this text box");
@@ -228,15 +239,59 @@ public class waste extends JFrame{
     submit.setFont(font); 
     p.add(submit);
     
-//*********************************** QUERY PORTION ******************************************
-    p.add(new JLabel());   // new lines to seperate portion on the main interface
+//*********************************** Query (non-specific) PORTION **************************************
+    p.add(new JLabel());   // new line to seperate portion on the main interface
     p.add(new JLabel());
+    
+    JLabel all_portion = new JLabel("View All Data:");
+    all_portion.setFont(bigFont); 
+    p.add(all_portion);
+    p.add(new JLabel()); 
+    
+    //label for waste type grouping option
+    JLabel wt_grouping = new JLabel("Would you like to group all data by waste type?");
+    wt_grouping.setFont(font); 
+    p.add(wt_grouping);
+    //waste type grouping combo box
+    String[] yesNo = {"Yes", "No"};
+    wt_sort = new JComboBox(yesNo);
+    wt_sort.setFont(font);
+    p.add(wt_sort);
+    
+    //label for display months table
+    JLabel displayM = new JLabel("Click to display total weight of waste collected monthly");
+    displayM.setFont(font); 
+    p.add(displayM);
+    //display months button
+    dataByMonth = new JButton("Generate Monthly Report");
+    dataByMonth.setToolTipText("Generate a table that shows total weight of waste collected grouped by month and optionally by waste type");
+    dataByMonth.addActionListener(lfb);
+    dataByMonth.setFont(font); 
+    p.add(dataByMonth);
+    
+    // label for all pickups table
+    JLabel displayP = new JLabel("Click to display all pickups in the database");
+    displayP.setFont(font); 
+    p.add(displayP);
+    //display all pickups button
+    allPickups = new JButton("Show All Pickups"); 
+    allPickups.setToolTipText("Generates a table that shows all pickups logged in the database");
+    allPickups.addActionListener(lfb);
+    allPickups.setFont(font);
+    p.add(allPickups); 
+
+//*********************************** QUERY (specific) PORTION ******************************************
+    p.add(new JLabel());   // new line to seperate portion on the main interface
     p.add(new JLabel());
-    p.add(new JLabel());
+    
+    JLabel query_portion = new JLabel("View Specific Data:");
+    query_portion.setFont(bigFont); 
+    p.add(query_portion);
+    p.add(new JLabel()); 
     
     
 //pickup sort label
-    JLabel pickup_sort_label = new JLabel("How do you want the pickups sorted?");
+    JLabel pickup_sort_label = new JLabel("How do you want the pickups sorted? (Pickup)");
     pickup_sort_label.setFont(font); 
     p.add(pickup_sort_label);
 //sort by comboBox for pickup table
@@ -246,7 +301,7 @@ public class waste extends JFrame{
     p.add(sortBy_pickup); 
     
 //aggro sort label
-    JLabel ag_sort_label = new JLabel("How should the aggregated data be sorted?");
+    JLabel ag_sort_label = new JLabel("How should the aggregated data be sorted? (Aggregation)");
     ag_sort_label.setFont(font); 
     p.add(ag_sort_label);
 //sort by comboBox for aggregation table
@@ -256,7 +311,7 @@ public class waste extends JFrame{
     p.add(sortBy_aggro);
     
 //ascdesc label
-    JLabel ascdesc_label = new JLabel("Ascending or Descending order?");
+    JLabel ascdesc_label = new JLabel("Ascending or Descending order? (Both)");
     ascdesc_label.setFont(font); 
     p.add(ascdesc_label);
 // combo box to descide ascending or descending order 
@@ -267,7 +322,7 @@ public class waste extends JFrame{
     
     
 //day2 label
-    JLabel day2_label = new JLabel("Select the start date to sort by");
+    JLabel day2_label = new JLabel("Select the start date to sort by (Both)");
     day2_label.setFont(font); 
     p.add(day2_label);
 //spinner for picking start day for query 
@@ -280,7 +335,7 @@ public class waste extends JFrame{
     p.add(start_day);
   
 //day3 label
-    JLabel day3_label = new JLabel("Select the start date to sort by");
+    JLabel day3_label = new JLabel("Select the start date to sort by (Both)");
     day3_label.setFont(font); 
     p.add(day3_label);
 //spinner for picking end day for query
@@ -320,11 +375,13 @@ public class waste extends JFrame{
 //***************************************************************************** ENTITY INSERTION PORTION **********************************************************************//    
     p.add(new JLabel());  //adding new lines to seperate section on the main interface
     p.add(new JLabel());
-    p.add(new JLabel());
-    p.add(new JLabel());
+    JLabel entity_portion = new JLabel("Review Fields:");
+    entity_portion.setFont(bigFont); 
+    p.add(entity_portion);
+    p.add(new JLabel()); 
     
     //label for company button
-    JLabel c_but = new JLabel("This button allows you to add a new company");
+    JLabel c_but = new JLabel("See table of companies, or add a new one");
     c_but.setFont(font);
     p.add(c_but); 
     //insert company button
@@ -335,7 +392,7 @@ public class waste extends JFrame{
     p.add(c_insert);
     
     //label for site button
-    JLabel s_but = new JLabel("This button allows you to add a new pickup site");
+    JLabel s_but = new JLabel("See table of sites, or add a new one");
     s_but.setFont(font);
     p.add(s_but); 
     //insert site button
@@ -346,7 +403,7 @@ public class waste extends JFrame{
     p.add(s_insert);
     
     //label for waste type button
-    JLabel w_but = new JLabel("This button allows you to add a new waste type");
+    JLabel w_but = new JLabel("See table of waste types, or add a new one");
     w_but.setFont(font);
     p.add(w_but); 
     //insert waste type button
@@ -979,6 +1036,47 @@ public class waste extends JFrame{
       }
       
       else if (e.getSource() == show_W){
+        
+      }
+      
+      else if (e.getSource() == allPickups){
+        JDialog anything = new JDialog();
+        anything.setTitle("All Pickups");
+        Toolkit tk = Toolkit.getDefaultToolkit();      
+        Dimension dim = tk.getScreenSize(); 
+        anything.setSize(dim.width, dim.height);
+        anything.setModal(true);
+        JPanel pp = new JPanel();
+        
+        JTable table = displayPickups();
+        pp.add(new JScrollPane(table));
+        anything.add(pp);
+        anything.setVisible(true);
+        
+      }
+      else if (e.getSource() == dataByMonth){
+        JDialog anything = new JDialog();
+        anything.setTitle("All Pickups");
+        Toolkit tk = Toolkit.getDefaultToolkit();      
+        Dimension dim = tk.getScreenSize(); 
+        anything.setSize(dim.width, dim.height);
+        anything.setModal(true);
+        JPanel pp = new JPanel();
+        
+        boolean sort = true;
+        String sortString = wt_sort.getSelectedItem().toString();
+        if (sortString.equals("Yes")){
+          sort = true;
+        }
+        else{
+          sort = false; 
+            }
+        
+        JTable table = displayMonths(sort);
+        pp.add(new JScrollPane(table));
+        anything.add(pp);
+        anything.setVisible(true);
+        
         
       }
       
