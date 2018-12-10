@@ -335,7 +335,7 @@ public class waste extends JFrame{
     p.add(start_day);
   
 //day3 label
-    JLabel day3_label = new JLabel("Select the start date to sort by (Both)");
+    JLabel day3_label = new JLabel("Select the end date to sort by (Both)");
     day3_label.setFont(font); 
     p.add(day3_label);
 //spinner for picking end day for query
