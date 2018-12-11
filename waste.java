@@ -872,11 +872,9 @@ public class waste extends JFrame{
         
         JDialog anything = new JDialog();
         anything.setTitle("Pickups From " + start + " to " + end);
-        Toolkit tk = Toolkit.getDefaultToolkit();      
-        Dimension dim = tk.getScreenSize(); 
-        anything.setSize(dim.width, dim.height);
+        anything.setSize(1200,1000);
         anything.setModal(true);
-        JPanel pp = new JPanel();
+        JPanel pp = new JPanel(new BorderLayout());
         
         JTable table = displayPickups(start, end, howToOrder, ascdesc);
         pp.add(new JScrollPane(table));
@@ -925,11 +923,9 @@ public class waste extends JFrame{
         
         JDialog anything = new JDialog();
         anything.setTitle("Aggregated Data from " + start + " to " + end);
-        Toolkit tk = Toolkit.getDefaultToolkit();      
-        Dimension dim = tk.getScreenSize(); 
-        anything.setSize(dim.width, dim.height);
+        anything.setSize(1200,1000);
         anything.setModal(true);
-        JPanel pp = new JPanel();
+        JPanel pp = new JPanel(new BorderLayout());
         
         JTable table = displayAggro(start, end, howToOrder, ascdesc);
         pp.add(new JScrollPane(table));
@@ -1105,11 +1101,9 @@ public class waste extends JFrame{
       else if (e.getSource() == show_C){
         JDialog anything = new JDialog();
         anything.setTitle("All Companies");
-        Toolkit tk = Toolkit.getDefaultToolkit();      
-        Dimension dim = tk.getScreenSize(); 
-        anything.setSize(dim.width, dim.height);
+        anything.setSize(1200,1000);
         anything.setModal(true);
-        JPanel pp = new JPanel();
+        JPanel pp = new JPanel(new BorderLayout());
         
         JTable table = showCompanies();
         pp.add(new JScrollPane(table));
@@ -1120,11 +1114,9 @@ public class waste extends JFrame{
       else if (e.getSource() == show_S){
         JDialog anything = new JDialog();
         anything.setTitle("All Pickup Sites");
-        Toolkit tk = Toolkit.getDefaultToolkit();      
-        Dimension dim = tk.getScreenSize(); 
-        anything.setSize(dim.width, dim.height);
+        anything.setSize(1200,1000);
         anything.setModal(true);
-        JPanel pp = new JPanel();
+        JPanel pp = new JPanel(new BorderLayout());
         
         JTable table = showSites();
         pp.add(new JScrollPane(table));
@@ -1135,11 +1127,9 @@ public class waste extends JFrame{
       else if (e.getSource() == show_W){
         JDialog anything = new JDialog();
         anything.setTitle("All Waste Types");
-        Toolkit tk = Toolkit.getDefaultToolkit();      
-        Dimension dim = tk.getScreenSize(); 
-        anything.setSize(dim.width, dim.height);
+        anything.setSize(1200,1000);
         anything.setModal(true);
-        JPanel pp = new JPanel();
+        JPanel pp = new JPanel(new BorderLayout());
         
         JTable table = showWaste_Types();
         pp.add(new JScrollPane(table));
@@ -1150,11 +1140,9 @@ public class waste extends JFrame{
       else if (e.getSource() == allPickups){
         JDialog anything = new JDialog();
         anything.setTitle("All Pickups");
-        Toolkit tk = Toolkit.getDefaultToolkit();      
-        Dimension dim = tk.getScreenSize(); 
-        anything.setSize(dim.width, dim.height);
+        anything.setSize(1200,1000);
         anything.setModal(true);
-        JPanel pp = new JPanel();
+        JPanel pp = new JPanel(new BorderLayout());
         
         JTable table = displayPickups();
         pp.add(new JScrollPane(table));
@@ -1164,12 +1152,10 @@ public class waste extends JFrame{
       }
       else if (e.getSource() == dataByMonth){
         JDialog anything = new JDialog();
-        anything.setTitle("All Pickups");
-        Toolkit tk = Toolkit.getDefaultToolkit();      
-        Dimension dim = tk.getScreenSize(); 
-        anything.setSize(dim.width, dim.height);
+        anything.setTitle("All Waste by Month");
+        anything.setSize(1200, 1000);
         anything.setModal(true);
-        JPanel pp = new JPanel();
+        JPanel pp = new JPanel(new BorderLayout());
         
         boolean sort = true;
         String sortString = wt_sort.getSelectedItem().toString();
@@ -1185,19 +1171,7 @@ public class waste extends JFrame{
         anything.add(pp);
         anything.setVisible(true);
         
-        
       }
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
     }
   }
 }
