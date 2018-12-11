@@ -10,6 +10,6 @@ public class AggroTableModel extends EntityTableModel<Aggro> {
     Double.class, Aggro::getAverage, Aggro::setAverage);
 
     public AggroTableModel() {
-        setColumns(WASTE_TYPE, SUM, AVERAGE);
+        setColumns(WASTE_TYPE, SUM);
     }
 }

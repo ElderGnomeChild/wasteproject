@@ -725,6 +725,70 @@ public class waste extends JFrame{
     }
 }
 
+private void deletePickup(int id) {
+  try (Connection conn = DriverManager.getConnection(DB_URL)) {
+        
+    PreparedStatement statement = conn.prepareStatement(
+        "delete from pickup where id = "+ id
+    );
+
+    statement.execute();
+
+  } catch (SQLException ex) {
+      JOptionPane.showMessageDialog(null, "Unable to connect to the database. :(", "Database error!", JOptionPane.ERROR_MESSAGE);
+      ex.printStackTrace();
+  }
+}
+
+
+private JTable displayMonths(boolean splitByWasteType, String startDate, String endDate) {
+  MonthTypeModel monthTypeModel;
+  MonthModel monthModel;
+
+  monthTypeModel = new MonthTypeModel();
+  monthModel = new MonthModel();
+
+  try (Connection conn = DriverManager.getConnection(DB_URL)) {
+    Statement s = conn.createStatement();
+    ResultSet mResults;
+    if(splitByWasteType) {
+      mResults = s.executeQuery("select smalldate, waste_type.name, sum(weight) from pickup join waste_type on waste_type_id = waste_type.id where pickup.date >= '" + startDate + "' and pickup.date <= '" + endDate + "' group by smalldate, waste_type_id order by smalldate");
+    }
+    else{
+      mResults = s.executeQuery("select smalldate, sum(weight) from pickup where pickup.date >= '" + startDate + "' and pickup.date <= '" + endDate + "' group by smalldate order by smalldate");
+    }
+    
+    while (mResults.next()) {
+
+      if (splitByWasteType) {
+        String smalldate = mResults.getString(1);
+        String wt = mResults.getString(2);
+        double weight = mResults.getDouble(3);
+        MonthType mT = new MonthType(smalldate, wt, weight);
+        monthTypeModel.addInstance(mT);
+      }
+
+      else{
+        String smalldate = mResults.getString(1);
+        double weight = mResults.getDouble(2);
+        Month m = new Month(smalldate, weight);
+        monthModel.addInstance(m);
+      }
+    }
+
+    
+  } catch (SQLException ex) {
+    JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
+    ex.printStackTrace();
+  }
+
+  JTable table;
+  if(splitByWasteType) { table= new JTable(monthTypeModel);}
+  else {table= new JTable(monthModel);}
+  return table;
+}
+
+
   private String monthfinder(String tempMonth){
    String month_num = "";  
         if (tempMonth.equals("Jan")){month_num = "01";}
