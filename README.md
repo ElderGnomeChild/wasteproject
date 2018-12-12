@@ -16,3 +16,8 @@ Currently have:
   both are able to be selected within ranges of dates and ordered by any field ascending or descending
     
   only displays one table at a time and cannot take input from front end
+  
+  
+12/11/18
+
+  program is fully functional
