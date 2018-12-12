@@ -474,18 +474,16 @@ public class waste extends JFrame{
    */
   
   //all pickups
-  private JTable displayPickups() {
+  private JTable displayPickups(boolean orderByDate) {
     PickupTableModel tableModel = new PickupTableModel();
-    // private JTable table = new JTable(tableModel);
     
-    // private AggroTableModel aggroModel = new AggroTableModel();
-    // private JTable aggroTable = new JTable(aggroModel);
-
-
 
     try (Connection conn = DriverManager.getConnection(DB_URL)) {
+      String orderBy = " ";
+      if(orderByDate){orderBy = "order by date";}
+
       Statement s = conn.createStatement();
-      ResultSet pResults = s.executeQuery("select Pickup.id, Pickup.weight, Pickup.date, Site.name as sname, Waste_Type.name as wname, Company.name as cname, smalldate from Pickup join Company on Company.id = Pickup.company_id join Waste_Type on Waste_Type.id = Pickup.waste_type_id join Site on Site.id = Pickup.site_id");
+      ResultSet pResults = s.executeQuery("select Pickup.id, Pickup.weight, Pickup.date, Site.name as sname, Waste_Type.name as wname, Company.name as cname, smalldate from Pickup join Company on Company.id = Pickup.company_id join Waste_Type on Waste_Type.id = Pickup.waste_type_id join Site on Site.id = Pickup.site_id" + orderBy);
       while (pResults.next()) {
         int id = pResults.getInt(1);
         double weight = pResults.getDouble(2);
@@ -1250,7 +1248,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
         anything.setModal(true);
         JPanel pp = new JPanel(new BorderLayout());
         
-        JTable table = displayPickups();
+        JTable table = displayPickups(true);
         pp.add(new JScrollPane(table));
         anything.add(pp);
         anything.setVisible(true);
