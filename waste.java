@@ -65,6 +65,7 @@ public class waste extends JFrame{
   private JSpinner start_day; 
   private JButton dmon;
   private JComboBox group; 
+  private JComboBox sortIdDate;
   
   
 //instance data queries
@@ -101,6 +102,7 @@ public class waste extends JFrame{
     font = new Font("Times New Roman", Font.PLAIN, 20);
     bigFont = new Font("Times New Roman", Font.BOLD, 30); 
     JPanel p = new JPanel(new GridLayout(0,2)); 
+    p.setBackground(Color.lightGray);
       
     // ********************************************** INSERT/DELETE PORTION ************************************************
     JLabel insert_portion = new JLabel("Insert/Delete Data:");
@@ -213,7 +215,7 @@ public class waste extends JFrame{
       p.add(this.waste_type);
       
     } catch (SQLException ex) {
-      JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null, "An unexpected error has occured","ERROR", JOptionPane.ERROR_MESSAGE);
       ex.printStackTrace();
     }
     
@@ -297,6 +299,18 @@ public class waste extends JFrame{
     dataByMonth.addActionListener(lfb);
     dataByMonth.setFont(font); 
     p.add(dataByMonth);
+    
+    
+    //label for sort by id or date
+    JLabel idDate = new JLabel("Sort Pickups by Date?");
+    idDate.setFont(font);
+    p.add(idDate);
+    // comboBox for sort by id or date
+    String[] bibble = {"Yes", "No"};
+    sortIdDate = new JComboBox(bibble);
+    sortIdDate.setFont(font);
+    p.add(sortIdDate); 
+    
     
     // label for all pickups table
     JLabel displayP = new JLabel("Click to display all pickups in the database");
@@ -480,7 +494,7 @@ public class waste extends JFrame{
 
     try (Connection conn = DriverManager.getConnection(DB_URL)) {
       String orderBy = " ";
-      if(orderByDate){orderBy = "order by date";}
+      if(orderByDate){orderBy = " order by date";}
 
       Statement s = conn.createStatement();
       ResultSet pResults = s.executeQuery("select Pickup.id, Pickup.weight, Pickup.date, Site.name as sname, Waste_Type.name as wname, Company.name as cname, smalldate from Pickup join Company on Company.id = Pickup.company_id join Waste_Type on Waste_Type.id = Pickup.waste_type_id join Site on Site.id = Pickup.site_id" + orderBy);
@@ -499,7 +513,7 @@ public class waste extends JFrame{
 
         
     } catch (SQLException ex) {
-      JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null, "An unexpected error has occured","ERROR", JOptionPane.ERROR_MESSAGE);
       ex.printStackTrace();
     }
 
@@ -532,7 +546,7 @@ public class waste extends JFrame{
         tableModel.addInstance(p);
       } 
     } catch (SQLException ex) {
-      JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null, "An unexpected error has occured","ERROR", JOptionPane.ERROR_MESSAGE);
       ex.printStackTrace();
     }
     JTable table = new JTable(tableModel);
@@ -556,7 +570,7 @@ public class waste extends JFrame{
         aggroModel.addInstance(a);
       } 
     } catch (SQLException ex) {
-      JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null, "An unexpected error has occured","ERROR", JOptionPane.ERROR_MESSAGE);
       ex.printStackTrace();
     }
 
@@ -584,7 +598,7 @@ public class waste extends JFrame{
         aggroModel.addInstance(a);
       } 
     } catch (SQLException ex) {
-      JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null, "An unexpected error has occured","ERROR", JOptionPane.ERROR_MESSAGE);
       ex.printStackTrace();
     }
 
@@ -630,7 +644,7 @@ public class waste extends JFrame{
 
       
     } catch (SQLException ex) {
-      JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null, "An unexpected error has occured","ERROR", JOptionPane.ERROR_MESSAGE);
       ex.printStackTrace();
     }
 
@@ -819,7 +833,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
 
     
   } catch (SQLException ex) {
-    JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(null, "An unexpected error has occured","ERROR", JOptionPane.ERROR_MESSAGE);
     ex.printStackTrace();
   }
 
@@ -886,7 +900,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
           while(results.next()) {
             companyId = results.getInt("id");
           }
-          System.out.println("cid: " + companyId);
+          //System.out.println("cid: " + companyId);
           
           
           
@@ -898,7 +912,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
           while(results.next()) {
             siteId = results.getInt("id");
           }
-          System.out.println("sid: " + siteId);
+          //System.out.println("sid: " + siteId);
           
           
           //wastetype
@@ -909,7 +923,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
           while(results.next()) {
             wasteTypeId = results.getInt("id");
           }
-          System.out.println("wid: " + wasteTypeId);
+          //System.out.println("wid: " + wasteTypeId);
           
           String doot = yearValue+"-"+monthValue+"-"+dayValue;
           String littledoot = yearValue+monthValue;
@@ -930,7 +944,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
           System.out.println("done");
           
         } catch (SQLException ex) {
-          JOptionPane.showMessageDialog(null, "DIDNT WORK RIP", "it be like that sometimes", JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(null, "An unexpected error has occured","ERROR", JOptionPane.ERROR_MESSAGE);
           ex.printStackTrace();
         }   
       }
@@ -980,6 +994,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
         anything.setSize(1200,1000);
         anything.setModal(true);
         JPanel pp = new JPanel(new BorderLayout());
+        pp.setBackground(Color.lightGray);
         
         JTable table = displayPickups(start, end, howToOrder, ascdesc);
         pp.add(new JScrollPane(table));
@@ -1030,6 +1045,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
         anything.setSize(1200,1000);
         anything.setModal(true);
         JPanel pp = new JPanel(new BorderLayout());
+        pp.setBackground(Color.lightGray);
         
         JTable table = displayAggro(start, end, "sum", ascdesc);
         pp.add(new JScrollPane(table));
@@ -1043,12 +1059,13 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
         ccc.setLocationRelativeTo(null);
         ccc.setModal(true);
         JPanel ppp = new JPanel(new GridLayout(0,2));
+        ppp.setBackground(Color.lightGray);
         
         JLabel lab1, lab2, lab3, lab4, lab5, labnull1, labnull2;
         lab1 = new JLabel("Company name");
         lab2 = new JLabel("Company address");
         lab3 = new JLabel("Company description");
-        lab4 = new JLabel("insert company");
+        lab4 = new JLabel("Insert Company");
         lab5 = new JLabel("Show companies");
         labnull1 = new JLabel();
         labnull2 = new JLabel();
@@ -1093,6 +1110,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
         ccc.setLocationRelativeTo(null);
         ccc.setModal(true);
         JPanel ppp = new JPanel(new GridLayout(0,2));
+        ppp.setBackground(Color.lightGray);
         
         JLabel lab1, lab2, lab3, lab4, lab5, labnull1, labnull2;
         lab1 = new JLabel("Site name");
@@ -1137,6 +1155,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
         ccc.setLocationRelativeTo(null);
         ccc.setModal(true);
         JPanel ppp = new JPanel(new GridLayout(0,2));
+        ppp.setBackground(Color.lightGray);
         
         JLabel lab1, lab2, lab3, lab4, lab5, labnull1, labnull2;
         lab1 = new JLabel("Waste type name");
@@ -1208,6 +1227,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
         anything.setSize(1200,1000);
         anything.setModal(true);
         JPanel pp = new JPanel(new BorderLayout());
+        pp.setBackground(Color.lightGray);
         
         JTable table = showCompanies();
         pp.add(new JScrollPane(table));
@@ -1221,6 +1241,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
         anything.setSize(1200,1000);
         anything.setModal(true);
         JPanel pp = new JPanel(new BorderLayout());
+        pp.setBackground(Color.lightGray);
         
         JTable table = showSites();
         pp.add(new JScrollPane(table));
@@ -1234,6 +1255,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
         anything.setSize(1200,1000);
         anything.setModal(true);
         JPanel pp = new JPanel(new BorderLayout());
+        pp.setBackground(Color.lightGray);
         
         JTable table = showWaste_Types();
         pp.add(new JScrollPane(table));
@@ -1247,8 +1269,15 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
         anything.setSize(1200,1000);
         anything.setModal(true);
         JPanel pp = new JPanel(new BorderLayout());
+        pp.setBackground(Color.lightGray);
         
-        JTable table = displayPickups(true);
+        boolean sort = false; 
+        String yesNo = sortIdDate.getSelectedItem().toString();
+        if (yesNo.equals("Yes")){
+         sort = true;
+        }
+ 
+        JTable table = displayPickups(sort);
         pp.add(new JScrollPane(table));
         anything.add(pp);
         anything.setVisible(true);
@@ -1260,6 +1289,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
         anything.setSize(1200, 1000);
         anything.setModal(true);
         JPanel pp = new JPanel(new BorderLayout());
+        pp.setBackground(Color.lightGray);
         
         boolean sort = true;
         String sortString = wt_sort.getSelectedItem().toString();
@@ -1318,6 +1348,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
         anything.setSize(1200,1000);
         anything.setModal(true);
         JPanel pp = new JPanel(new BorderLayout());
+        pp.setBackground(Color.lightGray);
         
         JTable table = displayMonths(sort, start, end);
         pp.add(new JScrollPane(table));
