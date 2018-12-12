@@ -36,6 +36,8 @@ public class waste extends JFrame{
   private JLabel displayLabel; 
   private JTextField tf1, tf2, tf3, tf4;
   private ListenForButton lfb; 
+  private JTextField idbox;
+  private JButton delete;
   
 //Instance data for insertion
   private String date;
@@ -61,6 +63,8 @@ public class waste extends JFrame{
   private JButton generate_aggregation_table; 
   private JSpinner end_day;
   private JSpinner start_day; 
+  private JButton dmon;
+  private JComboBox group; 
   
   
 //instance data queries
@@ -98,8 +102,8 @@ public class waste extends JFrame{
     bigFont = new Font("Times New Roman", Font.BOLD, 30); 
     JPanel p = new JPanel(new GridLayout(0,2)); 
       
-    // ********************************************** INSERT PORTION ************************************************
-    JLabel insert_portion = new JLabel("Insert Data:");
+    // ********************************************** INSERT/DELETE PORTION ************************************************
+    JLabel insert_portion = new JLabel("Insert/Delete Data:");
     insert_portion.setFont(bigFont); 
     p.add(insert_portion);
     p.add(new JLabel()); 
@@ -239,6 +243,31 @@ public class waste extends JFrame{
     submit.setFont(font); 
     p.add(submit);
     
+    p.add(new JLabel()); //seperation line
+    p.add(new JLabel()); 
+          
+    //id text box label
+    JLabel idtb = new JLabel("Specify the id of the pickup you want to delete");
+    idtb.setFont(font);
+    p.add(idtb);
+          
+    //id box
+    this.idbox = new JTextField();
+    idbox.setFont(font);
+    p.add(idbox);
+          
+    //delete button label
+    JLabel del_but = new JLabel("Click to delete the pickup of the specified ID");;
+    del_but.setFont(font);
+    p.add(del_but);
+    //delete button
+    this.delete = new JButton("Delete Pickup");
+    delete.setToolTipText("Deletes the pickup of the specified ID. Cannot be undone, but can be re-added");
+    delete.addActionListener(lfb);
+    delete.setFont(font);
+    p.add(delete);
+    
+    
 //*********************************** Query (non-specific) PORTION **************************************
     p.add(new JLabel());   // new line to seperate portion on the main interface
     p.add(new JLabel());
@@ -279,6 +308,9 @@ public class waste extends JFrame{
     allPickups.addActionListener(lfb);
     allPickups.setFont(font);
     p.add(allPickups); 
+    
+    //
+    
 
 //*********************************** QUERY (specific) PORTION ******************************************
     p.add(new JLabel());   // new line to seperate portion on the main interface
@@ -300,18 +332,9 @@ public class waste extends JFrame{
     sortBy_pickup.setFont(font); 
     p.add(sortBy_pickup); 
     
-//aggro sort label
-    JLabel ag_sort_label = new JLabel("How should the aggregated data be sorted? (Aggregation)");
-    ag_sort_label.setFont(font); 
-    p.add(ag_sort_label);
-//sort by comboBox for aggregation table
-    String[] aggroSort = {"sum", "average"}; 
-    this.sortBy_aggro = new JComboBox(aggroSort); 
-    sortBy_aggro.setFont(font); 
-    p.add(sortBy_aggro);
     
 //ascdesc label
-    JLabel ascdesc_label = new JLabel("Ascending or Descending order? (Both)");
+    JLabel ascdesc_label = new JLabel("Ascending or Descending order? (Aggregation and Pickup)");
     ascdesc_label.setFont(font); 
     p.add(ascdesc_label);
 // combo box to descide ascending or descending order 
@@ -322,7 +345,7 @@ public class waste extends JFrame{
     
     
 //day2 label
-    JLabel day2_label = new JLabel("Select the start date to sort by (Both)");
+    JLabel day2_label = new JLabel("Select the start date to sort by (All Buttons)");
     day2_label.setFont(font); 
     p.add(day2_label);
 //spinner for picking start day for query 
@@ -335,7 +358,7 @@ public class waste extends JFrame{
     p.add(start_day);
   
 //day3 label
-    JLabel day3_label = new JLabel("Select the end date to sort by (Both)");
+    JLabel day3_label = new JLabel("Select the end date to sort by (All Buttons)");
     day3_label.setFont(font); 
     p.add(day3_label);
 //spinner for picking end day for query
@@ -355,7 +378,6 @@ public class waste extends JFrame{
 //pickup table button
     this.generate_pickup_table = new JButton("Generate Pickup Table");
     this.generate_pickup_table.setToolTipText("Generates a table displaying all pickups between requested dates"); 
-    ListenForButton lfpick = new ListenForButton();
     this.generate_pickup_table.addActionListener(lfb); 
     generate_pickup_table.setFont(font); 
     p.add(generate_pickup_table);
@@ -367,10 +389,31 @@ public class waste extends JFrame{
 //aggregation table button
     this.generate_aggregation_table = new JButton("Generate Aggregation Table");
     this.generate_aggregation_table.setToolTipText("Generates a table displaying aggregated data between given dates and ordered by a specified parameter"); 
-    ListenForButton lfaggro = new ListenForButton();
     this.generate_aggregation_table.addActionListener(lfb); 
     generate_aggregation_table.setFont(font); 
     p.add(generate_aggregation_table);
+    
+    
+//grouping label
+    JLabel group_label = new JLabel("Group Monthly Data by waste type? (Monthly)");
+    group_label.setFont(font); 
+    p.add(group_label);
+//grouping combo box
+    this.group = new JComboBox(yesNo);
+    group.setFont(font);
+    p.add(group); 
+    
+//display months label
+    JLabel mon_label = new JLabel("Click to generate a table of all data grouped by month");
+    mon_label.setFont(font); 
+    p.add(mon_label);
+//display months table button
+    this.dmon = new JButton("Generate Monthly Grouping");
+    this.dmon.setToolTipText("Generates a table displaying all data between given dates grouped by month and waste type"); 
+    this.dmon.addActionListener(lfb); 
+    dmon.setFont(font); 
+    p.add(dmon);
+    
     
 //***************************************************************************** ENTITY INSERTION PORTION **********************************************************************//    
     p.add(new JLabel());  //adding new lines to seperate section on the main interface
@@ -983,7 +1026,6 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
             ascdesc = true;  
         }
         
-        String howToOrder = sortBy_aggro.getSelectedItem().toString();  
         
         JDialog anything = new JDialog();
         anything.setTitle("Aggregated Data from " + start + " to " + end);
@@ -991,7 +1033,7 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
         anything.setModal(true);
         JPanel pp = new JPanel(new BorderLayout());
         
-        JTable table = displayAggro(start, end, howToOrder, ascdesc);
+        JTable table = displayAggro(start, end, "sum", ascdesc);
         pp.add(new JScrollPane(table));
         anything.add(pp);
         anything.setVisible(true);
@@ -1236,6 +1278,67 @@ private JTable displayMonths(boolean splitByWasteType, String startDate, String 
         anything.setVisible(true);
         
       }
+       else if (e.getSource() == dmon){
+        
+        sdate = start_day.getValue().toString();
+        String input1, month1, day1, year1, tempMonth1; 
+        input1 = sdate; 
+        tempMonth1 = input1.substring(4, 7);
+        day1 = input1.substring(8, 10); 
+        year1 = input1.substring(24, 28); 
+        month1 = monthfinder(tempMonth1); 
+        sday = day1;
+        smonth = month1;
+        syear = year1;
+        
+        //end day data
+        edate = end_day.getValue().toString();
+        String input2, month2, day2, year2, tempMonth2; 
+        input2 = edate; 
+        tempMonth2 = input2.substring(4, 7);
+        day2 = input2.substring(8, 10); 
+        year2 = input2.substring(24, 28); 
+        month2 = monthfinder(tempMonth2); 
+        eday = day2;
+        emonth = month2;
+        eyear = year2;
+        
+        String start = syear + "-" + smonth + "-" + sday; 
+        String end = eyear + "-" + emonth + "-" + eday ;
+        
+        boolean sort = true;
+        String sortString = group.getSelectedItem().toString();
+        if (sortString.equals("Yes")){
+          sort = true;
+        }
+        else{
+          sort = false; 
+            }
+ 
+        JDialog anything = new JDialog();
+        anything.setTitle("Monthly Data from " + start + " to " + end);
+        anything.setSize(1200,1000);
+        anything.setModal(true);
+        JPanel pp = new JPanel(new BorderLayout());
+        
+        JTable table = displayMonths(sort, start, end);
+        pp.add(new JScrollPane(table));
+        anything.add(pp);
+        anything.setVisible(true);
+         
+       }
+       else if (e.getSource() == delete){
+         int aa = 0;
+         try {
+          aa = Integer.parseInt(idbox.getText());
+        }
+        catch (NumberFormatException excep) {
+          JOptionPane.showMessageDialog(waste.this, "input id as an integer number", "Invalid ID", JOptionPane.ERROR_MESSAGE);
+        }
+         deletePickup(aa);
+         
+       }
+       
     }
   }
 }
