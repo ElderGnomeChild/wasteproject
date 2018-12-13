@@ -125,7 +125,7 @@ public class waste extends JFrame{
     weight_types_label.setFont(font); 
     p.add(weight_types_label);
     //weight tpyes combo box
-    String[] weight_types = {"lbs", "tons"};
+    String[] weight_types = {"tons", "lbs"};
     this.weightType = new JComboBox(weight_types);
     weightType.setFont(font); 
     p.add(weightType);
@@ -364,7 +364,7 @@ public class waste extends JFrame{
     p.add(day2_label);
 //spinner for picking start day for query 
     start_day = new JSpinner(new SpinnerDateModel(todaysDate, null, null,Calendar.DAY_OF_MONTH));
-    start_day.setToolTipText("THIS ONE IS THE START"); 
+    start_day.setToolTipText("The first date to include in the sort, inclusive"); 
     JSpinner.DateEditor dateEditor1 = new JSpinner.DateEditor(start_day, "MM/dd/yy");
     start_day.setEditor(dateEditor1);
     date = year.getValue().toString();
@@ -377,7 +377,7 @@ public class waste extends JFrame{
     p.add(day3_label);
 //spinner for picking end day for query
     end_day = new JSpinner(new SpinnerDateModel(todaysDate, null, null,Calendar.DAY_OF_MONTH));
-    end_day.setToolTipText("This one is the end"); 
+    end_day.setToolTipText("The last date to include in the sort, inclusive"); 
     JSpinner.DateEditor dateEditor2 = new JSpinner.DateEditor(end_day, "MM/dd/yy");
     end_day.setEditor(dateEditor2);
     date = year.getValue().toString();
@@ -409,7 +409,7 @@ public class waste extends JFrame{
     
     
 //grouping label
-    JLabel group_label = new JLabel("Group Monthly Data by waste type? (Monthly)");
+    JLabel group_label = new JLabel("Group monthly data by waste type? (Monthly)");
     group_label.setFont(font); 
     p.add(group_label);
 //grouping combo box
@@ -418,12 +418,12 @@ public class waste extends JFrame{
     p.add(group); 
     
 //display months label
-    JLabel mon_label = new JLabel("Click to generate a table of all data grouped by month");
+    JLabel mon_label = new JLabel("Click to generate a table of all selected data grouped by month");
     mon_label.setFont(font); 
     p.add(mon_label);
 //display months table button
     this.dmon = new JButton("Generate Monthly Grouping");
-    this.dmon.setToolTipText("Generates a table displaying all data between given dates grouped by month and waste type"); 
+    this.dmon.setToolTipText("Generates a table displaying data between given dates grouped by month and waste type"); 
     this.dmon.addActionListener(lfb); 
     dmon.setFont(font); 
     p.add(dmon);
