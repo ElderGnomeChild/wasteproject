@@ -1,4 +1,9 @@
 # wasteproject
+This was a group project for CMPT 307 - Database Systems. The task was to create a program that used a database. Our group partnered with the environmental center at Westminster College to make an app for use in tracking the amounts and types of trash picked up from campus. Run the .jar file to use the program. It must share a directory with the driver and the database, which should be in the same folder on this repository.
+
+
+
+
 CMPT 307 Final Project
 
 Currently have: 
