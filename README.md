@@ -1,7 +1,7 @@
 # CMPT 307 Final Project
 This was a group project for CMPT 307 - Database Systems. The task was to create a program that used a database. Our group partnered with the environmental center at Westminster College to make an app for use in tracking the amounts and types of trash picked up from campus. Run the .jar file to use the program. It must share a directory with the driver and the database, which should be in the same folder on this repository.
 
-All relevant files are sorted into directories, they are duplicates of the files not in directories. The unsorted files are kept for update history purposes.
+All relevant files are sorted into directories, they are duplicates of the files not in directories. The unsorted files are kept in master branch for update history purposes.
 
 
 ---
